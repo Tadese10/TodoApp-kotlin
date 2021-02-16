@@ -1,20 +1,24 @@
+import dependencies.*
+
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    compileSdkVersion Versions.compilesdk
+    buildToolsVersion Versions.build_tools
 
     defaultConfig {
-        applicationId "com.tadese"
-        minSdkVersion 16
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        applicationId Application.id
+        minSdkVersion Versions.minsdk
+        targetSdkVersion Versions.targetsdk
+        versionCode Application.version_code
+        versionName Application.version_name
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner AndroidTestDependencies.instrumentation_runner // "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -24,22 +28,57 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility Java.java_version
+        targetCompatibility Java.java_version
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = Java.java_version
     }
 }
 
 dependencies {
+    //Dependencies
+    implementation Dependencies.kotlin_standard_library //"org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation Dependencies.ktx //'androidx.core:core-ktx:1.3.2'
+    implementation Dependencies.kotlin_reflect
+    implementation Dependencies.dagger
+    implementation Dependencies.kotlin_coroutines
+    implementation Dependencies.kotlin_coroutines_android
+    implementation Dependencies.retrofit
+    implementation Dependencies.retrofit_gson
+    implementation Dependencies.room_ktx
+    implementation Dependencies.room_runtime
+    implementation AndroidTestDependencies.idling_resource
+    implementation Dependencies.navigation_runtime
+    implementation Dependencies.navigation_ui
+    implementation Dependencies.navigation_fragment
+    implementation Dependencies.navigation_dynamic
+    implementation Dependencies.material_dialogs
+    implementation Dependencies.material_dialogs_input
+    implementation Dependencies.markdown_processor
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.3.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation AndroidTestDependencies.test_rules
+    androidTestImplementation AndroidTestDependencies.text_core_ktx
+    androidTestImplementation AndroidTestDependencies.navigation_testing
+    debugImplementation AndroidTestDependencies.fragment_testing
+    kaptAndroidTest  AnnotationProcessing.dagger_compiler
+    androidTestImplementation AndroidTestDependencies.test_runner
+    //Annotation Processing
+    kapt AnnotationProcessing.dagger_compiler
+    kapt AnnotationProcessing.room_compiler
+
+
+    //Support
+    implementation SupportDependencies.appcompat
+    implementation SupportDependencies.constraintlayout
+    implementation SupportDependencies.material_design
+    implementation SupportDependencies.swipe_refresh_layout
+
+    //Unit Tests
+    testImplementation TestDependencies.mockk
+    testImplementation TestDependencies.jupiter_api
+    testRuntimeOnly TestDependencies.jupiter_engine
+    testImplementation TestDependencies.jupiter_params
+    testImplementation TestDependencies.junit4 // We need this to do some assertions not to run the test itself
+
 }
