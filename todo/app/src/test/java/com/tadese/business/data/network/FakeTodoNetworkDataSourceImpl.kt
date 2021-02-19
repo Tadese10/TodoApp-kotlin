@@ -11,6 +11,7 @@ constructor(
     private val todos: HashMap<Int, Todo>,
     private val posts: HashMap<Int, Post>,
     private val users: HashMap<String, LoginUser>,
+    private val postsComments: HashMap<Int, Comment>,
     var throwPostGeneralError: Boolean = false
 ) : TodoNetworkDatasource {
 
@@ -54,7 +55,28 @@ constructor(
     }
 
     override suspend fun addPostComment(comment: Comment): Comment {
-        TODO("Not yet implemented")
+        if(throwPostGeneralError){
+            throw Exception(POST_GENERAL_ERROR)
+        }
+        if(!posts.containsKey(comment.PostID))
+            throw Exception("Post not found.")
+
+        var user = users.values.filter { it.email == comment.Email }
+        if(user.isEmpty()){
+            throw Exception("User not found.")
+        }
+
+        var newPostComment = Comment(
+            Id = postsComments.size + 1,
+            PostID = comment.PostID,
+            Name = users.values.filter { it.email == comment.Email }[0].name,
+            body = comment.body,
+            Email = comment.Email
+        )
+
+        postsComments[newPostComment.Id!!] = newPostComment
+
+        return newPostComment
     }
 
     override suspend fun addPost(post: Post): Post {
@@ -82,6 +104,14 @@ constructor(
 
     override suspend fun findPostById(potsId: Int): Post? {
         return posts[potsId]
+    }
+
+    override suspend fun findCommentById(commentId: Int): Comment? {
+        return postsComments[commentId]
+    }
+
+    override suspend fun getPostByUserId(userId: Int): List<Post> {
+        return posts.values.filter { it.userId!! == userId }.toList()
     }
 
     companion object{

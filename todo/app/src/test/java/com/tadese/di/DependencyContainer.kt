@@ -34,6 +34,9 @@ class DependencyContainer {
             users = todoDataFactory.produceHashMapOfUsers(
               todoDataFactory.produceListOfUsers()
             ),
+            postsComments = todoDataFactory.produceHashMapOfPostsComments(
+                todoDataFactory.produceListOfPostsComments()
+            )
         )
 
         todoCacheDataSource = FakeTodoCacheDataSourceImpl(

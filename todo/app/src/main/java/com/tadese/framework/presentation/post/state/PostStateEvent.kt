@@ -10,7 +10,7 @@ sealed class PostStateEvent :StateEvent{
     ) : PostStateEvent() {
 
         override fun errorInfo(): String {
-            return "Error adding TODO."
+            return "Error adding POST."
         }
 
         override fun eventName(): String {

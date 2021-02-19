@@ -18,7 +18,7 @@ import java.io.IOException
  * Reference: https://medium.com/@douglas.iacovelli/how-to-handle-errors-with-retrofit-and-coroutines-33e7492a912
  */
 
-suspend fun <T> safeApiCall(
+suspend fun <T> appApiCall(
     dispatcher: CoroutineDispatcher,
     apiCall: suspend () -> T?
 ): ApiResult<T?> {
@@ -59,7 +59,7 @@ suspend fun <T> safeApiCall(
     }
 }
 
-suspend fun <T> safeCacheCall(
+suspend fun <T> appCacheCall(
     dispatcher: CoroutineDispatcher,
     cacheCall: suspend () -> T?
 ): CacheResult<T?> {

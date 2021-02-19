@@ -1,7 +1,7 @@
 package com.tadese.business.interactors.todo
 
-import com.example.cleanarchitecture.business.data.util.safeApiCall
-import com.example.cleanarchitecture.business.data.util.safeCacheCall
+import com.example.cleanarchitecture.business.data.util.appApiCall
+import com.example.cleanarchitecture.business.data.util.appCacheCall
 import com.tadese.business.data.cache.abstract.TodoCacheDataSource
 import com.tadese.business.data.network.ApiResponseHandler
 import com.tadese.business.data.network.abstract.TodoNetworkDatasource
@@ -25,7 +25,7 @@ class GetAllTodoByUserId(
         stateEvent : TodoStateEvent.GetAllUserTodoEvent
     ) : Flow<DataState<TodoViewState>> = flow{
 
-        val networkResult = safeApiCall(Dispatchers.IO){
+        val networkResult = appApiCall(Dispatchers.IO){
             todoNetworkDataSource.getAllTodoByUserId(stateEvent.username)
         }
 
@@ -72,7 +72,7 @@ class GetAllTodoByUserId(
     }
 
     private suspend fun saveUsersTodoToCachedata(userTodoList: List<Todo>, stateEvent: TodoStateEvent.GetAllUserTodoEvent) {
-            safeCacheCall(Dispatchers.IO){
+            appCacheCall(Dispatchers.IO){
                 todoCacheDataSource.saveUserTodos(userTodoList)
             }
     }

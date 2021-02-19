@@ -1,7 +1,7 @@
 package com.tadese.business.interactors.todo
 
-import com.example.cleanarchitecture.business.data.util.safeApiCall
-import com.example.cleanarchitecture.business.data.util.safeCacheCall
+import com.example.cleanarchitecture.business.data.util.appApiCall
+import com.example.cleanarchitecture.business.data.util.appCacheCall
 import com.tadese.business.data.cache.abstract.TodoCacheDataSource
 import com.tadese.business.data.network.ApiResponseHandler
 import com.tadese.business.data.network.abstract.TodoNetworkDatasource
@@ -26,7 +26,7 @@ class AddTodo(
         stateEvent : TodoStateEvent.AddTodoEvent
     ) : Flow<DataState<TodoViewState>> = flow{
 
-        val networkResult = safeApiCall(Dispatchers.IO){
+        val networkResult = appApiCall(Dispatchers.IO){
             todoNetworkDataSource.addTodo(stateEvent.todo)
         }
 
@@ -73,7 +73,7 @@ class AddTodo(
     }
 
     private suspend fun saveNewTodoToCachedata(newTodo: Todo?, stateEvent: TodoStateEvent.AddTodoEvent) {
-        safeCacheCall(Dispatchers.IO){
+        appCacheCall(Dispatchers.IO){
             todoCacheDataSource.addTodo(newTodo!!)
         }
     }

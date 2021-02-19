@@ -1,6 +1,6 @@
 package com.tadese.business.interactors.post
 
-import com.example.cleanarchitecture.business.data.util.safeApiCall
+import com.example.cleanarchitecture.business.data.util.appApiCall
 import com.tadese.business.data.network.ApiResponseHandler
 import com.tadese.business.data.network.abstract.TodoNetworkDatasource
 import com.tadese.business.domain.model.post.Post
@@ -22,7 +22,7 @@ class GetAllPost(
         stateEvent: PostStateEvent.GetAllPostEvent
     ): Flow<DataState<PostViewState>> = flow {
 
-        val networkResult = safeApiCall(Dispatchers.IO) {
+        val networkResult = appApiCall(Dispatchers.IO) {
             todoNetworkDataSource.getAllPost()
         }
 

@@ -1,10 +1,8 @@
 package com.tadese.business.interactors.todo
 
-import com.example.cleanarchitecture.business.data.util.safeApiCall
-import com.example.cleanarchitecture.business.data.util.safeCacheCall
+import com.example.cleanarchitecture.business.data.util.appApiCall
 import com.tadese.business.data.cache.abstract.TodoCacheDataSource
 import com.tadese.business.data.network.ApiResponseHandler
-import com.tadese.business.data.network.abstract.TodoNetworkDatasource
 import com.tadese.business.domain.model.todo.Todo
 import com.tadese.business.domain.state.DataState
 import com.tadese.business.domain.state.MessageType
@@ -24,7 +22,7 @@ class SearchTodoList(
         stateEvent: TodoStateEvent.SearchTodoListEvent
     ): Flow<DataState<TodoViewState>> = flow {
 
-        val networkResult = safeApiCall(Dispatchers.IO) {
+        val networkResult = appApiCall(Dispatchers.IO) {
             todoCacheDataSource.searchTodo(
                 stateEvent.query,
                 stateEvent.filterAndOrder,

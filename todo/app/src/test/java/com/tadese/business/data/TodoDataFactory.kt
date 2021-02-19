@@ -2,6 +2,7 @@ package com.tadese.business.data
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.tadese.business.domain.model.comment.Comment
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.model.post.Post
 import com.tadese.business.domain.model.todo.Todo
@@ -56,6 +57,22 @@ class TodoDataFactory(
             .fromJson(
                 getDataFromFile("users_list.json"),
                 object: TypeToken<List<LoginUser>>() {}.type
+            )
+    }
+
+    fun produceHashMapOfPostsComments(produceListOfPostsComments: List<Comment>): HashMap<Int, Comment> {
+        val map = HashMap<Int, Comment>()
+        for(comment in produceListOfPostsComments){
+            map[comment.Id!!] = comment
+        }
+        return map
+    }
+
+    fun produceListOfPostsComments(): List<Comment> {
+        return Gson()
+            .fromJson(
+                getDataFromFile("post_comments_list.json"),
+                object: TypeToken<List<Comment>>() {}.type
             )
     }
 
