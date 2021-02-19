@@ -48,7 +48,7 @@ class AddPostCommentTest {
         )
 
         //Active User
-        CoroutineScope(Dispatchers.IO).launch {
+        runBlocking {
             loggedInUser = todoNetworkDataSource.loginUser(RightUsername)
         }
 

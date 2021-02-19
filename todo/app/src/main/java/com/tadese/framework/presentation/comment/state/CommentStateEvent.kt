@@ -1,6 +1,7 @@
 package com.tadese.framework.presentation.comment.state
 
 import com.tadese.business.domain.model.comment.Comment
+import com.tadese.business.domain.model.post.Post
 import com.tadese.business.domain.state.StateEvent
 
 sealed class CommentStateEvent :StateEvent {
@@ -22,7 +23,7 @@ sealed class CommentStateEvent :StateEvent {
     }
 
     class GetPostCommentsStateEvent(
-        val comment: Comment
+        val post: Post
     ) : CommentStateEvent(){
 
         override fun errorInfo(): String {

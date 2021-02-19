@@ -114,6 +114,13 @@ constructor(
         return posts.values.filter { it.userId!! == userId }.toList()
     }
 
+    override suspend fun getPostCommentsByPostId(postId: Int): List<Comment> {
+        if(throwPostGeneralError){
+            throw Exception(POST_GENERAL_ERROR)
+        }
+        return ArrayList(postsComments.values.filter { it.PostID == postId })
+    }
+
     companion object{
         const val FORCE_LOGIN_GENERAL_EXCEPTION = "FORCE_LOGIN_GENERAL_EXCEPTION"
         const val SOMETHING_WENT_WRONG = "Something went wrong while authenticating user."

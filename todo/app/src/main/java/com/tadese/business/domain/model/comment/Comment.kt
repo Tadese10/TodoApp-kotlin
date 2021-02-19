@@ -10,6 +10,8 @@ data class Comment (
     @Expose
     @SerializedName("id")
     val Id : Int? = null,
+    @Expose
+    @SerializedName("postId")
     val PostID : Int,
     val Name: String? =null,
     val body: String,

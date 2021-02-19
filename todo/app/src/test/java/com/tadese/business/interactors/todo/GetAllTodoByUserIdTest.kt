@@ -55,7 +55,7 @@ class GetAllTodoByUserIdTest {
         )
 
         //Login User
-        CoroutineScope(IO).launch {
+        runBlocking {
             loggedInUser = todoNetworkDataSource.loginUser(RightUsername)
         }
     }

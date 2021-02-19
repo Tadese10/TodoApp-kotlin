@@ -27,4 +27,6 @@ interface TodoNetworkDatasource {
 
     suspend fun getPostByUserId(userId: Int) : List<Post>
 
+    suspend fun getPostCommentsByPostId(postId: Int) : List<Comment>
+
 }
