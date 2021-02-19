@@ -1,12 +1,12 @@
 package com.tadese.framework.presentation.post.state
 
-import com.tadese.business.domain.model.comment.Comment
+import com.tadese.business.domain.model.post.Post
 import com.tadese.business.domain.state.StateEvent
 
 sealed class PostStateEvent :StateEvent{
 
     class AddNewPostEvent(
-        val comment: Comment
+        val post: Post
     ) : PostStateEvent() {
 
         override fun errorInfo(): String {

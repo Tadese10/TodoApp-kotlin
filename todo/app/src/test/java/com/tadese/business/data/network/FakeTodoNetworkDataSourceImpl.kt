@@ -57,11 +57,31 @@ constructor(
         TODO("Not yet implemented")
     }
 
+    override suspend fun addPost(post: Post): Post {
+        if(throwPostGeneralError){
+            throw Exception(POST_GENERAL_ERROR)
+        }
+
+        var newPost = Post(
+            id = posts.size + 1,
+            title = post.title,
+            body = post.body,
+            comments = ArrayList(),
+            userId = post.userId
+        )
+        posts[newPost.id!!] = newPost
+        return newPost
+    }
+
     override suspend fun getAllPost(): List<Post> {
         if(throwPostGeneralError){
             throw Exception(POST_GENERAL_ERROR)
         }
        return ArrayList(posts.values)
+    }
+
+    override suspend fun findPostById(potsId: Int): Post? {
+        return posts[potsId]
     }
 
     companion object{

@@ -10,6 +10,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class PostViewState constructor(
     var Posts : List<Post> = ArrayList(),
+    var newPost : Post? = null,
     var newComment: Todo? = null, // comment that can be created with fab
     var page: Int? = null,
     var layoutManagerState: Parcelable? = null,

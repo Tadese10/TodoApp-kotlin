@@ -6,11 +6,11 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Post(
-    val id : Int,
-    val userId : Int,
+    val id : Int? = null,
+    val userId : Int?,
     val title: String,
     val body : String,
-    val comments: List<Comment>
+    val comments: List<Comment> = ArrayList()
 ) : Parcelable {
     override fun toString(): String {
         return "Post(id=$id, userId=$userId, title='$title', body='$body', comments=$comments)"

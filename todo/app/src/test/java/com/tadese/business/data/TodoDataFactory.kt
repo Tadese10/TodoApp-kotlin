@@ -30,7 +30,7 @@ class TodoDataFactory(
     fun produceHashMapOfPosts(posts: List<Post>): HashMap<Int, Post>{
         val map = HashMap<Int, Post>()
         for(post in posts){
-            map[post.id] = post
+            map[post.id!!] = post
         }
         return map
     }
