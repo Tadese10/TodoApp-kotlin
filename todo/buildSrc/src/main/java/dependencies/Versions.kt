@@ -1,6 +1,7 @@
 package dependencies
 
 object Versions {
+    val multi_dex_version = "2.0.1"
     val firebase_bom = "26.4.0"
     val gradle = "4.1.2"
     val build_tools =  "30.0.2"

@@ -21,6 +21,8 @@ sealed class UIComponentType{
     ): UIComponentType()
 
     class None: UIComponentType()
+
+    class Text: UIComponentType()
 }
 
 
