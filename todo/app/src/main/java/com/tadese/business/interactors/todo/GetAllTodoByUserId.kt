@@ -63,15 +63,15 @@ class GetAllTodoByUserId(
                 stateEvent = stateEvent
             ))
         }else {
-            handler?.data?.let {
-                saveUsersTodoToCachedata(it.userTodoList, stateEvent)//Cache the response
+            handler.data?.let {
+                saveUsersTodoToCachedata(it.userTodoList)//Cache the response
             }
 
             emit(handler)
         }
     }
 
-    private suspend fun saveUsersTodoToCachedata(userTodoList: List<Todo>, stateEvent: TodoStateEvent.GetAllUserTodoEvent) {
+    private suspend fun saveUsersTodoToCachedata(userTodoList: List<Todo>) {
             appCacheCall(Dispatchers.IO){
                 todoCacheDataSource.saveUserTodos(userTodoList)
             }

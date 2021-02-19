@@ -16,6 +16,7 @@ object Dependencies {
     val material_dialogs_input = "com.afollestad.material-dialogs:input:${Versions.material_dialogs}"
     val room_runtime = "androidx.room:room-runtime:${Versions.room}"
     val room_ktx = "androidx.room:room-ktx:${Versions.room}"
+    var room_compiler = "android.arch.persistence.room:compiler:${Versions.room}"
     val play_core = "com.google.android.play:core:${Versions.play_core}"
     val leak_canary = "com.squareup.leakcanary:leakcanary-android:${Versions.leak_canary}"
     val firebase_firestore = "com.google.firebase:firebase-firestore-ktx:${Versions.firebase_firestore}"

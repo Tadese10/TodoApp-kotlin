@@ -21,7 +21,7 @@ class GetPostComment(
     ): Flow<DataState<CommentViewState>> = flow {
 
         val networkResult = appApiCall(Dispatchers.IO) {
-            todoNetworkDataSource.getPostCommentsByPostId(stateEvent.post?.id!!)
+            todoNetworkDataSource.getPostCommentsByPostId(stateEvent.post.id!!)
         }
 
         var handler = object : ApiResponseHandler<CommentViewState, List<Comment>>(
@@ -33,10 +33,10 @@ class GetPostComment(
 
                 val viewState = CommentViewState(
                     Post  = Post(
-                        id = stateEvent.post?.id,
-                        userId = stateEvent.post?.userId,
-                        title = stateEvent.post?.title!!,
-                        body = stateEvent.post?.body!!,
+                        id = stateEvent.post.id,
+                        userId = stateEvent.post.userId,
+                        title = stateEvent.post.title,
+                        body = stateEvent.post.body,
                         comments  = resultObj
                     )
                 )

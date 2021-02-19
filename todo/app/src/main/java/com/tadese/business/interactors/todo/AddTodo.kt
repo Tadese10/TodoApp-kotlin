@@ -60,19 +60,19 @@ class AddTodo(
                     uiComponentType = UIComponentType.Dialog(),
                     messageType = MessageType.Error()
                 ),
-                data = handler?.data,
+                data = handler.data,
                 stateEvent = stateEvent
             ))
         }else{
-            handler?.data?.newTodo?.let {
-                saveNewTodoToCachedata(it, stateEvent)//Cached the response
+            handler.data?.newTodo?.let {
+                saveNewTodoToCachedata(it)//Cached the response
             }
 
             emit(handler)
         }
     }
 
-    private suspend fun saveNewTodoToCachedata(newTodo: Todo?, stateEvent: TodoStateEvent.AddTodoEvent) {
+    private suspend fun saveNewTodoToCachedata(newTodo: Todo?) {
         appCacheCall(Dispatchers.IO){
             todoCacheDataSource.addTodo(newTodo!!)
         }
