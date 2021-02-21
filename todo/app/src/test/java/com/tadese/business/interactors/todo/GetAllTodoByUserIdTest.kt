@@ -1,28 +1,18 @@
 package com.tadese.business.interactors.todo
 
-import com.tadese.business.data.cache.FakeTodoCacheDataSourceImpl
-import com.tadese.business.data.cache.abstract.TodoCacheDataSource
+import com.tadese.business.data.cache.FakeAppCacheDataSourceImpl
 import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl
-import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl.Companion.SQLiteError
-import com.tadese.business.data.network.abstract.TodoNetworkDatasource
+import com.tadese.business.data.network.abstraction.TodoNetworkDatasource
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.state.DataState
 import com.tadese.di.DependencyContainer
 import com.tadese.framework.presentation.todo.state.TodoStateEvent
 import com.tadese.framework.presentation.todo.state.TodoViewState
-import io.mockk.verify
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.FlowCollector
-import org.hamcrest.CoreMatchers
-import org.hamcrest.CoreMatchers.not
-import org.hamcrest.MatcherAssert
-import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
-import kotlin.text.Typography.times
 
 @InternalCoroutinesApi
 class GetAllTodoByUserIdTest {
@@ -41,7 +31,7 @@ class GetAllTodoByUserIdTest {
 
     // dependencies
     private val dependencyContainer: DependencyContainer = DependencyContainer()
-    private val todoCacheDataSource: FakeTodoCacheDataSourceImpl
+    private val todoCacheDataSource: FakeAppCacheDataSourceImpl
     private val todoNetworkDataSource: TodoNetworkDatasource
     private var loggedInUser : LoginUser? = null
 
@@ -51,7 +41,7 @@ class GetAllTodoByUserIdTest {
         todoNetworkDataSource = dependencyContainer.todoNetworkDatasource
         _getAllTodoByUserId = GetAllTodoByUserId(
             todoNetworkDataSource = todoNetworkDataSource,
-            todoCacheDataSource = todoCacheDataSource
+            appCacheDataSource = todoCacheDataSource
         )
 
         //Login User
@@ -70,7 +60,7 @@ class GetAllTodoByUserIdTest {
 
                     assertEquals(value.data?.userTodoList?.isEmpty(), false)
 
-                    assertEquals(value?.stateMessage?.response?.message,
+                    assertEquals(value.stateMessage?.response?.message,
                         GetAllTodoByUserId.FETCHING_USER_TODOS_LIST_WAS_SUCCESSFUL
                     )
 
@@ -86,7 +76,7 @@ class GetAllTodoByUserIdTest {
     @Test
     fun FetchTodoList_Failed_RightUserIdGeneralExceptionConfirmFailedCacheData() = runBlocking {
 
-        var response = _getAllTodoByUserId.getAllTodoByUserId(TodoStateEvent.GetAllUserTodoEvent(
+         _getAllTodoByUserId.getAllTodoByUserId(TodoStateEvent.GetAllUserTodoEvent(
             FakeTodoNetworkDataSourceImpl.FORCE_GENERAL_EXCEPTION
         ))
             .collect(object : FlowCollector<DataState<TodoViewState>>{

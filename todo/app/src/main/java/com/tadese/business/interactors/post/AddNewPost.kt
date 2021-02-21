@@ -2,7 +2,7 @@ package com.tadese.business.interactors.post
 
 import com.example.cleanarchitecture.business.data.util.appApiCall
 import com.tadese.business.data.network.ApiResponseHandler
-import com.tadese.business.data.network.abstract.TodoNetworkDatasource
+import com.tadese.business.data.network.abstraction.TodoNetworkDatasource
 import com.tadese.business.domain.model.post.Post
 import com.tadese.business.domain.state.*
 import com.tadese.framework.presentation.post.state.PostStateEvent
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flow
 
 
 class AddNewPost(
-    private val todoNetworkDataSource: TodoNetworkDatasource,
+    private val todoNetworkDataSource: TodoNetworkDatasource
 ) {
     suspend fun addNewPost(
         stateEvent: PostStateEvent.AddNewPostEvent

@@ -1,18 +1,14 @@
 package com.tadese.business.interactors.todo
 
-import com.tadese.business.data.cache.FakeTodoCacheDataSourceImpl
-import com.tadese.business.data.network.abstract.TodoNetworkDatasource
+import com.tadese.business.data.cache.FakeAppCacheDataSourceImpl
+import com.tadese.business.data.network.abstraction.TodoNetworkDatasource
 import com.tadese.business.domain.model.login.LoginUser
-import com.tadese.business.domain.model.todo.Todo
 import com.tadese.business.domain.state.DataState
 import com.tadese.di.DependencyContainer
-import com.tadese.framework.datasource.cache.database.TODO_PAGINATION_PAGE_SIZE
-import com.tadese.framework.datasource.cache.database.TodoDao
 import com.tadese.framework.presentation.todo.state.TodoStateEvent
 import com.tadese.framework.presentation.todo.state.TodoViewState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.collect
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -33,7 +29,7 @@ class SearchTodoListTest {
 
     // dependencies
     private val dependencyContainer: DependencyContainer = DependencyContainer()
-    private val todoCacheDataSource: FakeTodoCacheDataSourceImpl
+    private val todoCacheDataSource: FakeAppCacheDataSourceImpl
     private val todoNetworkDataSource: TodoNetworkDatasource
     private var loggedInUser : LoginUser? = null
 
@@ -44,7 +40,7 @@ class SearchTodoListTest {
         todoCacheDataSource = dependencyContainer.todoCacheDataSource
         todoNetworkDataSource = dependencyContainer.todoNetworkDatasource
         searchTodoList = SearchTodoList(
-            todoCacheDataSource = todoCacheDataSource
+            appCacheDataSource = todoCacheDataSource
         )
 
         //Login User
@@ -125,7 +121,7 @@ class SearchTodoListTest {
     @Test
     fun SearchTodoList_Failed_GeneralExceptionConfirmNoListRetrieved() = runBlocking {
         searchTodoList.searchTodoList(TodoStateEvent.SearchTodoListEvent(
-            query = FakeTodoCacheDataSourceImpl.FORCE_TODO_SEARCH_GENERAL_EXCEPTION,
+            query = FakeAppCacheDataSourceImpl.FORCE_TODO_SEARCH_GENERAL_EXCEPTION,
             filterAndOrder = filterAndOrder,
             page = 1
         )).collect(

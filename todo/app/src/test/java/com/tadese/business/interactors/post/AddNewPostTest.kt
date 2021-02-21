@@ -1,18 +1,15 @@
 package com.tadese.business.interactors.post
 
-import com.tadese.business.data.cache.FakeTodoCacheDataSourceImpl
+import com.tadese.business.data.cache.FakeAppCacheDataSourceImpl
 import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.model.post.Post
 import com.tadese.business.domain.state.DataState
-import com.tadese.business.interactors.todo.AddTodoTest
 import com.tadese.di.DependencyContainer
 import com.tadese.framework.presentation.post.state.PostStateEvent
 import com.tadese.framework.presentation.post.state.PostViewState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.FlowCollector
-import org.junit.Before
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -31,7 +28,7 @@ class AddNewPostTest {
 
     // dependencies
     private val dependencyContainer: DependencyContainer = DependencyContainer()
-    private val todoCacheDataSource: FakeTodoCacheDataSourceImpl
+    private val todoCacheDataSource: FakeAppCacheDataSourceImpl
     private val todoNetworkDataSource: FakeTodoNetworkDataSourceImpl
     private var loggedInUser : LoginUser? = null
 

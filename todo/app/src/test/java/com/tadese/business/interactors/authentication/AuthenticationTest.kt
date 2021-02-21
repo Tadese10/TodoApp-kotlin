@@ -1,10 +1,10 @@
 package com.tadese.business.interactors.authentication
 
-import com.tadese.business.data.cache.abstract.TodoCacheDataSource
+import com.tadese.business.data.cache.abstraction.AppCacheDataSource
 import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl.Companion.FORCE_LOGIN_GENERAL_EXCEPTION
 import com.tadese.business.data.network.NetworkErrors.NETWORK_DATA_NULL
 import com.tadese.business.data.network.NetworkErrors.NETWORK_ERROR_UNKNOWN
-import com.tadese.business.data.network.abstract.TodoNetworkDatasource
+import com.tadese.business.data.network.abstraction.TodoNetworkDatasource
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.state.DataState
 import com.tadese.di.DependencyContainer
@@ -31,16 +31,16 @@ class AuthenticationTest {
 
     // dependencies
     private val dependencyContainer: DependencyContainer = DependencyContainer()
-    private val todoCacheDataSource: TodoCacheDataSource
+    private val appCacheDataSource: AppCacheDataSource
     private val todoNetworkDataSource: TodoNetworkDatasource
 
     init {
         dependencyContainer.build()
-        todoCacheDataSource = dependencyContainer.todoCacheDataSource
+        appCacheDataSource = dependencyContainer.todoCacheDataSource
         todoNetworkDataSource = dependencyContainer.todoNetworkDatasource
         userLogin = UserLogin(
             todoNetworkDataSource = todoNetworkDataSource,
-            todoCacheDataSource = todoCacheDataSource
+            appCacheDataSource = appCacheDataSource
         )
     }
 
@@ -56,7 +56,7 @@ class AuthenticationTest {
                     )
 
                     //Confirm if the user's data was cached
-                    assertEquals(todoCacheDataSource.getLoggedInUserData(),value!!.data)
+                    assertEquals(appCacheDataSource.getLoggedInUserData(),value!!.data)
                 }
 
             })
@@ -76,7 +76,7 @@ class AuthenticationTest {
             })
 
         //Confirm if the user's data wasn't cached
-        assertNull(todoCacheDataSource.getLoggedInUserData())
+        assertNull(appCacheDataSource.getLoggedInUserData())
     }
 
     @Test
@@ -93,7 +93,7 @@ class AuthenticationTest {
             })
 
         //Confirm if the user's data wasn't cached
-        assertNull(todoCacheDataSource.getLoggedInUserData())
+        assertNull(appCacheDataSource.getLoggedInUserData())
     }
 
     @Test
@@ -110,7 +110,7 @@ class AuthenticationTest {
             })
 
         //Confirm if the user's data wasn't cached
-        assertNull(todoCacheDataSource.getLoggedInUserData())
+        assertNull(appCacheDataSource.getLoggedInUserData())
     }
 
 

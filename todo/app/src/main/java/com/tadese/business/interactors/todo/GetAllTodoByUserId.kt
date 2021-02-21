@@ -2,9 +2,9 @@ package com.tadese.business.interactors.todo
 
 import com.example.cleanarchitecture.business.data.util.appApiCall
 import com.example.cleanarchitecture.business.data.util.appCacheCall
-import com.tadese.business.data.cache.abstract.TodoCacheDataSource
+import com.tadese.business.data.cache.abstraction.AppCacheDataSource
 import com.tadese.business.data.network.ApiResponseHandler
-import com.tadese.business.data.network.abstract.TodoNetworkDatasource
+import com.tadese.business.data.network.abstraction.TodoNetworkDatasource
 import com.tadese.business.domain.model.todo.Todo
 import com.tadese.business.domain.state.DataState
 import com.tadese.business.domain.state.MessageType
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.flow
 
 class GetAllTodoByUserId(
     private val todoNetworkDataSource: TodoNetworkDatasource,
-    private val todoCacheDataSource: TodoCacheDataSource
+    private val appCacheDataSource: AppCacheDataSource
 )
 {
     suspend fun getAllTodoByUserId(
@@ -73,7 +73,7 @@ class GetAllTodoByUserId(
 
     private suspend fun saveUsersTodoToCachedata(userTodoList: List<Todo>) {
             appCacheCall(Dispatchers.IO){
-                todoCacheDataSource.saveUserTodos(userTodoList)
+                appCacheDataSource.saveUserTodos(userTodoList)
             }
     }
 

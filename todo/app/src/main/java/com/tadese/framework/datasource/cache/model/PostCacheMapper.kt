@@ -3,8 +3,13 @@ package com.tadese.framework.datasource.cache.model
 import com.tadese.business.domain.model.post.Post
 import com.tadese.business.domain.model.todo.Todo
 import com.tadese.business.domain.util.EntityMapper
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class PostCacheMapper constructor() : EntityMapper<PostEntity, Post> {
+@Singleton
+class PostCacheMapper
+    @Inject
+    constructor(): EntityMapper<PostEntity, Post> {
 
     override fun mapFromEntity(entity: PostEntity): Post {
         return Post(

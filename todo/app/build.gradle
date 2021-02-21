@@ -1,5 +1,4 @@
 import dependencies.*
-
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
@@ -38,10 +37,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    
     compileOptions {
         sourceCompatibility Java.java_version
         targetCompatibility Java.java_version
     }
+
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
+
     kotlinOptions {
         jvmTarget = Java.java_version
     }

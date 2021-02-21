@@ -9,18 +9,18 @@ const val TODO_PAGINATION_PAGE_SIZE = 30
 
 @Dao
 interface TodoDao {
-    //region Post DAO
+
     @Insert
     suspend fun insertPost(post : PostEntity): Long
 
-    @Insert//onConflict = OnConflictStrategy.IGNORE
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPosts(notes: List<PostEntity>): LongArray
 
     @Query("DELETE FROM ${PostEntity.name} WHERE id IN (:ids)")
     suspend fun deletePosts(ids: List<String>): Int
 
     @Query("DELETE FROM ${PostEntity.name}")
-    suspend fun deleteAllPosts()
+    suspend fun deleteAllPosts(): Int
 
     @Query("SELECT * FROM ${PostEntity.name}")
     suspend fun getAllPosts(): List<PostEntity>
@@ -38,7 +38,7 @@ interface TodoDao {
     suspend fun updatePost(id : Int,
                            title: String,
                            body : String,
-                           comments: String)
+                           comments: String): Int
 
     @Query("SELECT COUNT(*) FROM ${PostEntity.name}")
     suspend fun getNumPosts(): Int
@@ -60,13 +60,11 @@ interface TodoDao {
     suspend fun findPostById(id: Int): PostEntity
 
 
-    //endregion
 
-    //region Todo DAO
     @Insert
     suspend fun insertTodo(post : TodoEntity): Long
 
-    @Insert//onConflict = OnConflictStrategy.IGNORE
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTodos(todos: List<TodoEntity>): LongArray
 
     @Query("DELETE FROM ${TodoEntity.name} WHERE id IN (:ids)")
@@ -113,15 +111,12 @@ interface TodoDao {
         """)
     suspend fun findTodoById(id: Int): TodoEntity
 
-    //endregion
 
-    //region Users Service
     @Insert
     suspend fun insertLoggedInUser(user : UsersEntity): Long
 
     @Query("SELECT * FROM ${UsersEntity.table_name}")
     suspend fun findLoggedInUser(): List<UsersEntity>
 
-    //endregion
 
 }

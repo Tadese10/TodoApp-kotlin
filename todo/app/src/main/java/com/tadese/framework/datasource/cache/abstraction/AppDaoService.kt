@@ -4,8 +4,8 @@ import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.model.post.Post
 import com.tadese.business.domain.model.todo.Todo
 
-interface TodoDaoService {
-    //region Todo Cache Service
+interface AppDaoService {
+
     suspend fun addTodo(todo: Todo): Long
 
     suspend fun searchTodo(
@@ -21,17 +21,10 @@ interface TodoDaoService {
 
     suspend fun saveUserTodos(usersTodo: List<Todo>): LongArray
 
-    //endregion
-
-    //region User Cache Service
-
     suspend fun saveLoggedInUserData(data: LoginUser): Long
 
     suspend fun getLoggedInUserData(): LoginUser?
 
-    //endregion
-
-    //region Post Cache Service
     suspend fun addPost(post: Post): Long
 
     suspend fun searchPost(
@@ -46,5 +39,4 @@ interface TodoDaoService {
     suspend fun getAllPost(): List<Post>
 
     suspend fun savePosts(posts: List<Post>): LongArray
-    //endregion
 }

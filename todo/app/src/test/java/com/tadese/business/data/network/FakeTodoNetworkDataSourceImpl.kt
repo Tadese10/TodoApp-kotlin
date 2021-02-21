@@ -1,6 +1,6 @@
 package com.tadese.business.data.network
 
-import com.tadese.business.data.network.abstract.TodoNetworkDatasource
+import com.tadese.business.data.network.abstraction.TodoNetworkDatasource
 import com.tadese.business.domain.model.comment.Comment
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.model.post.Post

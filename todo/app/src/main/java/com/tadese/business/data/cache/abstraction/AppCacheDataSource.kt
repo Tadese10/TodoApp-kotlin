@@ -1,13 +1,12 @@
-package com.tadese.business.data.cache.abstract
+package com.tadese.business.data.cache.abstraction
 
-import com.tadese.business.domain.model.comment.Comment
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.model.post.Post
 import com.tadese.business.domain.model.todo.Todo
 
-interface TodoCacheDataSource {
+interface AppCacheDataSource {
 
-    suspend fun addTodo(todo : Todo):Long
+   suspend fun addTodo(todo: Todo):Long
 
     suspend fun searchTodo(
         query: String,
@@ -27,5 +26,5 @@ interface TodoCacheDataSource {
 
     suspend fun saveUserTodos(usersTodo: List<Todo>):LongArray
 
-    suspend fun savePosts(posts: List<Post>): List<Post>
+    suspend fun savePosts(posts: List<Post>): LongArray
 }

@@ -1,10 +1,10 @@
 package com.tadese.business.interactors.todo
 
-import com.tadese.business.data.cache.FakeTodoCacheDataSourceImpl
+import com.tadese.business.data.cache.FakeAppCacheDataSourceImpl
 import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl.Companion.FORCE_ADD_TODO_GENERAL_EXCEPTION
 import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl.Companion.SQLiteError
 import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl.Companion.WrongUserId
-import com.tadese.business.data.network.abstract.TodoNetworkDatasource
+import com.tadese.business.data.network.abstraction.TodoNetworkDatasource
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.model.todo.Todo
 import com.tadese.business.domain.state.DataState
@@ -15,7 +15,6 @@ import com.tadese.framework.presentation.todo.state.TodoStateEvent
 import com.tadese.framework.presentation.todo.state.TodoViewState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.FlowCollector
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -36,7 +35,7 @@ class AddTodoTest {
 
     // dependencies
     private val dependencyContainer: DependencyContainer = DependencyContainer()
-    private val todoCacheDataSource: FakeTodoCacheDataSourceImpl
+    private val todoCacheDataSource: FakeAppCacheDataSourceImpl
     private val todoNetworkDataSource: TodoNetworkDatasource
     private var loggedInUser : LoginUser? = null
 
@@ -46,7 +45,7 @@ class AddTodoTest {
         todoNetworkDataSource = dependencyContainer.todoNetworkDatasource
         addTodo = AddTodo(
             todoNetworkDataSource = todoNetworkDataSource,
-            todoCacheDataSource = todoCacheDataSource
+            appCacheDataSource = todoCacheDataSource
         )
 
         //Login User
@@ -72,7 +71,7 @@ class AddTodoTest {
 
                     assertNotNull(value.data?.newTodo) //Confirm that the new todo returned
 
-                    assertEquals(value?.stateMessage?.response?.message,
+                    assertEquals(value.stateMessage?.response?.message,
                         ADD_USER_TODO_SUCCESSFUL
                     )//Confirm the success message
 
@@ -98,7 +97,7 @@ class AddTodoTest {
 
                     assertNull(value.data)//Confirm that the response data is null
 
-                    assertEquals(value?.stateMessage?.response?.message,
+                    assertEquals(value.stateMessage?.response?.message,
                         ADD_USER_TODO_FAILED
                     )//Confirm the failed response message
 
@@ -124,7 +123,7 @@ class AddTodoTest {
 
                     assertNull(value.data)//Confirm that the response data is null
 
-                    assertEquals(value?.stateMessage?.response?.message,
+                    assertEquals(value.stateMessage?.response?.message,
                         ADD_USER_TODO_FAILED
                     )//Confirm the failed response message
 
@@ -150,7 +149,7 @@ class AddTodoTest {
 
                     assertNull(value.data)//Confirm that the response data is null
 
-                    assertEquals(value?.stateMessage?.response?.message,
+                    assertEquals(value.stateMessage?.response?.message,
                         ADD_USER_TODO_FAILED
                     )//Confirm the failed response message
 

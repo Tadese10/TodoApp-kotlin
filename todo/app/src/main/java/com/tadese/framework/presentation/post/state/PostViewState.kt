@@ -13,7 +13,7 @@ data class PostViewState constructor(
     var newPost : Post? = null,
     var newComment: Todo? = null, // comment that can be created with fab
     var page: Int? = null,
-    var layoutManagerState: Parcelable? = null,
+    var layoutManagerState: Parcelable? = null
 ): Parcelable, ViewState {
 
     override fun toString(): String {

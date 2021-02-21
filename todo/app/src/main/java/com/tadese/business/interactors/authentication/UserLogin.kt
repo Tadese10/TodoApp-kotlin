@@ -3,9 +3,9 @@ package com.tadese.business.interactors.authentication
 import com.example.cleanarchitecture.business.data.util.appApiCall
 import com.example.cleanarchitecture.business.data.util.appCacheCall
 import com.tadese.business.data.cache.CacheResponseHandler
-import com.tadese.business.data.cache.abstract.TodoCacheDataSource
+import com.tadese.business.data.cache.abstraction.AppCacheDataSource
 import com.tadese.business.data.network.ApiResponseHandler
-import com.tadese.business.data.network.abstract.TodoNetworkDatasource
+import com.tadese.business.data.network.abstraction.TodoNetworkDatasource
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.state.*
 import com.tadese.framework.presentation.authentication.state.AuthenticationStateEvent
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.flow
 
 class UserLogin(
     private val todoNetworkDataSource: TodoNetworkDatasource,
-    private val todoCacheDataSource: TodoCacheDataSource
+    private val appCacheDataSource: AppCacheDataSource
 ) {
     suspend fun login(stateEvent: AuthenticationStateEvent.AuthenticateUserEvent): Flow<DataState<LoginUser>?> =
         flow {
@@ -55,7 +55,7 @@ class UserLogin(
 
     private suspend fun saveUserLoggedInData(data: LoginUser?, stateEvent : AuthenticationStateEvent.AuthenticateUserEvent): DataState<Long>? {
         val response  = appCacheCall(Dispatchers.IO) {
-            todoCacheDataSource.saveLoggedInUserData(data!!)
+            appCacheDataSource.saveLoggedInUserData(data!!)
         }
 
         var handler = object : CacheResponseHandler<Long, Long>(

@@ -2,8 +2,13 @@ package com.tadese.framework.datasource.cache.model
 
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.util.EntityMapper
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class LoggedInUserCacheMapper: EntityMapper<UsersEntity, LoginUser> {
+@Singleton
+class LoggedInUserCacheMapper
+@Inject
+    constructor(): EntityMapper<UsersEntity, LoginUser> {
 
     override fun mapFromEntity(entity: UsersEntity): LoginUser {
         return LoginUser(

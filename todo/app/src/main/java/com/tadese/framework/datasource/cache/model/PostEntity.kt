@@ -26,7 +26,7 @@ data class PostEntity(
     val body : String,
 
     @ColumnInfo(name="comments")
-    val comments: String
+    val comments: String?
 
 ) {
     @Ignore
@@ -36,8 +36,8 @@ data class PostEntity(
 
         const val name = "post"
 
-        fun convertListOfCommentsToString(comments: List<Comment>) : String{
-             return if(comments.isNullOrEmpty()){
+        fun convertListOfCommentsToString(comments: List<Comment>?) : String{
+             return if(comments == null){
                 ""
             }else{
                 Gson()
@@ -48,7 +48,7 @@ data class PostEntity(
             }
         }
 
-        fun convertListOfCommentsToJson(comments: String) : List<Comment>{
+        fun convertListOfCommentsToJson(comments: String?) : List<Comment>{
             return if(comments.isNullOrEmpty()){
                  ArrayList()
             }else{

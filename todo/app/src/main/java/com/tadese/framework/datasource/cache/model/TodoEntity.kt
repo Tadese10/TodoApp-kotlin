@@ -1,15 +1,12 @@
 package com.tadese.framework.datasource.cache.model
 
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.tadese.framework.datasource.cache.model.TodoEntity.Companion.name
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 @Entity(tableName = name)
-data class TodoEntity constructor(
+data class TodoEntity(
 
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name= "id")
@@ -23,7 +20,7 @@ data class TodoEntity constructor(
 
     @ColumnInfo(name= "completed")
     val completed: Boolean
-) : Parcelable{
+) {
     companion object {
         const val name = "todo"
     }

@@ -1,6 +1,6 @@
 package com.tadese.business.interactors.comment
 
-import com.tadese.business.data.cache.FakeTodoCacheDataSourceImpl
+import com.tadese.business.data.cache.FakeAppCacheDataSourceImpl
 import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.model.post.Post
@@ -10,8 +10,6 @@ import com.tadese.framework.presentation.comment.state.CommentStateEvent
 import com.tadese.framework.presentation.comment.state.CommentViewState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.collect
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -30,7 +28,7 @@ class GetPostCommentTest {
 
     // dependencies
     private val dependencyContainer: DependencyContainer = DependencyContainer()
-    private val todoCacheDataSource: FakeTodoCacheDataSourceImpl
+    private val todoCacheDataSource: FakeAppCacheDataSourceImpl
     private val todoNetworkDataSource: FakeTodoNetworkDataSourceImpl
     private var loggedInUser : LoginUser? = null
     private lateinit var randomPost : Post
@@ -96,9 +94,9 @@ class GetPostCommentTest {
         randomPost  = todoNetworkDataSource.getPostByUserId(loggedInUser?.id!!)[0]
         var newPost = Post(
             id = 1_000_399_300,
-            title = randomPost!!.title,
-            body = randomPost!!.body,
-            userId = randomPost!!.userId
+            title = randomPost.title,
+            body = randomPost.body,
+            userId = randomPost.userId
         )
         getPostComment.getPostComment(CommentStateEvent.GetPostCommentsStateEvent(newPost)).collect(
 

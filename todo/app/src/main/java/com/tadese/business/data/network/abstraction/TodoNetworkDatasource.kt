@@ -1,4 +1,4 @@
-package com.tadese.business.data.network.abstract
+package com.tadese.business.data.network.abstraction
 
 import com.tadese.business.domain.model.comment.Comment
 import com.tadese.business.domain.model.login.LoginUser

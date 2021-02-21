@@ -12,6 +12,7 @@ import com.tadese.framework.datasource.cache.model.UsersEntity.Companion.table_n
 
 @Entity(tableName = table_name)
 data class UsersEntity(
+
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name="id")
     val id: Int,

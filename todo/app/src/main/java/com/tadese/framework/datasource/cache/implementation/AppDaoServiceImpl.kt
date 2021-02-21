@@ -3,7 +3,7 @@ package com.tadese.framework.datasource.cache.implementation
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.model.post.Post
 import com.tadese.business.domain.model.todo.Todo
-import com.tadese.framework.datasource.cache.abstraction.TodoDaoService
+import com.tadese.framework.datasource.cache.abstraction.AppDaoService
 import com.tadese.framework.datasource.cache.database.TodoDao
 import com.tadese.framework.datasource.cache.model.LoggedInUserCacheMapper
 import com.tadese.framework.datasource.cache.model.PostCacheMapper
@@ -12,14 +12,14 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TodoDaoServiceImplementation
+class AppDaoServiceImpl
 @Inject
 constructor(
-    val postDao: TodoDao,
-    val postCacheMapper: PostCacheMapper,
-    val todoCacheMapper: TodoCacheMapper,
-    val loggedInUserCacheMapper: LoggedInUserCacheMapper
-) : TodoDaoService {
+    private  val postDao: TodoDao,
+    private val postCacheMapper: PostCacheMapper,
+    private val todoCacheMapper: TodoCacheMapper,
+    private val loggedInUserCacheMapper: LoggedInUserCacheMapper
+) : AppDaoService {
 
     override suspend fun addTodo(todo: Todo): Long {
         return postDao.insertTodo(todoCacheMapper.mapToEntity(todo))

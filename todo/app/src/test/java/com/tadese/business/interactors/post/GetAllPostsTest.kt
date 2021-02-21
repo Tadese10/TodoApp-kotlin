@@ -1,6 +1,6 @@
 package com.tadese.business.interactors.post
 
-import com.tadese.business.data.cache.FakeTodoCacheDataSourceImpl
+import com.tadese.business.data.cache.FakeAppCacheDataSourceImpl
 import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl
 import com.tadese.business.data.network.NetworkErrors.NETWORK_ERROR_UNKNOWN
 import com.tadese.business.domain.state.DataState
@@ -27,7 +27,7 @@ class GetAllPostsTest {
 
     // dependencies
     private val dependencyContainer: DependencyContainer = DependencyContainer()
-    private val todoCacheDataSource: FakeTodoCacheDataSourceImpl
+    private val todoCacheDataSource: FakeAppCacheDataSourceImpl
     private val todoNetworkDataSource: FakeTodoNetworkDataSourceImpl
 
     init {

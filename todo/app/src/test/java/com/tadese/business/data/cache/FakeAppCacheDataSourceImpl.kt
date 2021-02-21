@@ -1,21 +1,17 @@
 package com.tadese.business.data.cache
 
-import android.util.Log
-import com.tadese.business.data.cache.abstract.TodoCacheDataSource
-import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl
-import com.tadese.business.data.network.abstract.TodoNetworkDatasource
+import com.tadese.business.data.cache.abstraction.AppCacheDataSource
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.model.post.Post
 import com.tadese.business.domain.model.todo.Todo
 import com.tadese.framework.datasource.cache.database.TODO_PAGINATION_PAGE_SIZE
-import com.tadese.util.Constants.TAG
 
-class FakeTodoCacheDataSourceImpl
+class FakeAppCacheDataSourceImpl
 constructor(
     private val todos: HashMap<Int, Todo>,
     private var savedUserdata: LoginUser? = null,
     var throwSQLiteError : Boolean = false
-) : TodoCacheDataSource {
+) : AppCacheDataSource {
 
     override suspend fun addTodo(todo: Todo): Long {
         if(todo.id == FORCE_NEW_TODO_EXCEPTION){
@@ -29,7 +25,7 @@ constructor(
     }
 
     override suspend fun searchTodo(query: String, filterAndOrder: String, page: Int): List<Todo> {
-       //Handles general exception while searching for todo
+        //Handles general exception while searching for todo
         if(query == FORCE_TODO_SEARCH_GENERAL_EXCEPTION){
             throw Exception(FORCE_TODO_SEARCH_GENERAL_EXCEPTION)
         }
@@ -63,8 +59,8 @@ constructor(
 
     override suspend fun saveLoggedInUserData(data: LoginUser): Long {
         if(data.id == FORCE_GENERAL_FAILURE){
-            return -1 // fail -  Simulating if SQLite failed to insert the new note and -1 is being returned
             savedUserdata = null  //set user's data to null
+            return -1 // fail -  Simulating if SQLite failed to insert the new note and -1 is being returned
         }
         savedUserdata = data
         return 1
@@ -74,19 +70,19 @@ constructor(
         return savedUserdata
     }
 
-    override suspend fun saveUserTodos(data: List<Todo>): LongArray {
+    override suspend fun saveUserTodos(usersTodo: List<Todo>): LongArray {
         if(throwSQLiteError){//To simulate SQLite Err
             throw Exception("SQLite Error")
         }
-        val response = LongArray(data.size)
-        for((index,todo) in data.withIndex()){
+        val response = LongArray(usersTodo.size)
+        for((index,todo) in usersTodo.withIndex()){
             this.todos[todo.id] = todo
             response[index] = 1
         }
         return response
     }
 
-    override suspend fun savePosts(posts: List<Post>): List<Post> {
+    override suspend fun savePosts(posts: List<Post>): LongArray {
         TODO("Not yet implemented")
     }
 
@@ -95,5 +91,4 @@ constructor(
         const val FORCE_GENERAL_FAILURE = -2
         const val FORCE_TODO_SEARCH_GENERAL_EXCEPTION = "FORCE_TODO_SEARCH_GENERAL_EXCEPTION"
     }
-
 }

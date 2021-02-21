@@ -3,8 +3,13 @@ package com.tadese.framework.datasource.cache.model
 import com.tadese.business.domain.model.post.Post
 import com.tadese.business.domain.model.todo.Todo
 import com.tadese.business.domain.util.EntityMapper
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class TodoCacheMapper : EntityMapper<TodoEntity, Todo> {
+@Singleton
+class TodoCacheMapper
+    @Inject
+    constructor(): EntityMapper<TodoEntity, Todo> {
 
     override fun mapFromEntity(entity: TodoEntity): Todo {
         return Todo(

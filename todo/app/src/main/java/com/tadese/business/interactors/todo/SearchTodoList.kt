@@ -1,7 +1,7 @@
 package com.tadese.business.interactors.todo
 
 import com.example.cleanarchitecture.business.data.util.appApiCall
-import com.tadese.business.data.cache.abstract.TodoCacheDataSource
+import com.tadese.business.data.cache.abstraction.AppCacheDataSource
 import com.tadese.business.data.network.ApiResponseHandler
 import com.tadese.business.domain.model.todo.Todo
 import com.tadese.business.domain.state.DataState
@@ -16,14 +16,14 @@ import kotlinx.coroutines.flow.flow
 
 
 class SearchTodoList(
-    private val todoCacheDataSource: TodoCacheDataSource
+    private val appCacheDataSource: AppCacheDataSource
 ) {
     suspend fun searchTodoList(
         stateEvent: TodoStateEvent.SearchTodoListEvent
     ): Flow<DataState<TodoViewState>> = flow {
 
         val networkResult = appApiCall(Dispatchers.IO) {
-            todoCacheDataSource.searchTodo(
+            appCacheDataSource.searchTodo(
                 stateEvent.query,
                 stateEvent.filterAndOrder,
                 stateEvent.page
