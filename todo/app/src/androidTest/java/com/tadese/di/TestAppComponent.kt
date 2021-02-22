@@ -1,6 +1,7 @@
 package com.tadese.di
 
 import com.tadese.framework.datasource.cache.TestAppDaoService
+import com.tadese.framework.datasource.network.TestAppNetworkServiceApiImple
 import com.tadese.framework.presentation.TestBaseApplication
 import dagger.BindsInstance
 import dagger.Component
@@ -27,5 +28,7 @@ interface TestAppComponent : AppComponent  {
     }
 
     fun inject(testAppDaoService: TestAppDaoService)
+
+    fun inject(testAppNetworkServiceImple: TestAppNetworkServiceApiImple)
 
 }

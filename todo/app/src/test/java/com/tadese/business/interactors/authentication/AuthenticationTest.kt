@@ -4,7 +4,7 @@ import com.tadese.business.data.cache.abstraction.AppCacheDataSource
 import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl.Companion.FORCE_LOGIN_GENERAL_EXCEPTION
 import com.tadese.business.data.network.NetworkErrors.NETWORK_DATA_NULL
 import com.tadese.business.data.network.NetworkErrors.NETWORK_ERROR_UNKNOWN
-import com.tadese.business.data.network.abstraction.TodoNetworkDatasource
+import com.tadese.business.data.network.abstraction.AppNetworkDatasource
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.state.DataState
 import com.tadese.di.DependencyContainer
@@ -32,7 +32,7 @@ class AuthenticationTest {
     // dependencies
     private val dependencyContainer: DependencyContainer = DependencyContainer()
     private val appCacheDataSource: AppCacheDataSource
-    private val todoNetworkDataSource: TodoNetworkDatasource
+    private val todoNetworkDataSource: AppNetworkDatasource
 
     init {
         dependencyContainer.build()

@@ -2,7 +2,7 @@ package com.tadese.business.interactors.comment
 
 import com.example.cleanarchitecture.business.data.util.appApiCall
 import com.tadese.business.data.network.ApiResponseHandler
-import com.tadese.business.data.network.abstraction.TodoNetworkDatasource
+import com.tadese.business.data.network.abstraction.AppNetworkDatasource
 import com.tadese.business.domain.model.comment.Comment
 import com.tadese.business.domain.state.*
 import com.tadese.framework.presentation.comment.state.CommentStateEvent
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flow
 
 
 class AddPostComment(
-    private val todoNetworkDataSource: TodoNetworkDatasource
+    private val todoNetworkDataSource: AppNetworkDatasource
 ) {
     suspend fun addPostComment(
         stateEvent: CommentStateEvent.AddCommentStateEvent

@@ -1,6 +1,6 @@
 package com.tadese.business.data.network
 
-import com.tadese.business.data.network.abstraction.TodoNetworkDatasource
+import com.tadese.business.data.network.abstraction.AppNetworkDatasource
 import com.tadese.business.domain.model.comment.Comment
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.model.post.Post
@@ -13,7 +13,7 @@ constructor(
     private val users: HashMap<String, LoginUser>,
     private val postsComments: HashMap<Int, Comment>,
     var throwPostGeneralError: Boolean = false
-) : TodoNetworkDatasource {
+) : AppNetworkDatasource {
 
     override suspend fun loginUser(username: String): LoginUser? {
         if(username.isNullOrEmpty()){//Handles null or empty username

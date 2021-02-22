@@ -4,7 +4,7 @@ import com.example.cleanarchitecture.business.data.util.appApiCall
 import com.example.cleanarchitecture.business.data.util.appCacheCall
 import com.tadese.business.data.cache.abstraction.AppCacheDataSource
 import com.tadese.business.data.network.ApiResponseHandler
-import com.tadese.business.data.network.abstraction.TodoNetworkDatasource
+import com.tadese.business.data.network.abstraction.AppNetworkDatasource
 import com.tadese.business.domain.model.todo.Todo
 import com.tadese.business.domain.state.DataState
 import com.tadese.business.domain.state.MessageType
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class GetAllTodoByUserId(
-    private val todoNetworkDataSource: TodoNetworkDatasource,
+    private val todoNetworkDataSource: AppNetworkDatasource,
     private val appCacheDataSource: AppCacheDataSource
 )
 {

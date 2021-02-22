@@ -5,7 +5,7 @@ import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.model.post.Post
 import com.tadese.business.domain.model.todo.Todo
 
-interface TodoNetworkDatasource {
+interface AppNetworkDatasource {
 
     suspend fun loginUser(username : String): LoginUser?
 

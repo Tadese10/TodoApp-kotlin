@@ -2,7 +2,7 @@ package com.tadese.business.interactors.post
 
 import com.example.cleanarchitecture.business.data.util.appApiCall
 import com.tadese.business.data.network.ApiResponseHandler
-import com.tadese.business.data.network.abstraction.TodoNetworkDatasource
+import com.tadese.business.data.network.abstraction.AppNetworkDatasource
 import com.tadese.business.domain.model.post.Post
 import com.tadese.business.domain.state.DataState
 import com.tadese.business.domain.state.MessageType
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.flow
 
 
 class GetAllPost(
-    private val todoNetworkDataSource: TodoNetworkDatasource
+    private val todoNetworkDataSource: AppNetworkDatasource
 ) {
     suspend fun getAllPost(
         stateEvent: PostStateEvent.GetAllPostEvent

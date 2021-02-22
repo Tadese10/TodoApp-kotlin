@@ -5,7 +5,7 @@ import com.example.cleanarchitecture.business.data.util.appCacheCall
 import com.tadese.business.data.cache.CacheResponseHandler
 import com.tadese.business.data.cache.abstraction.AppCacheDataSource
 import com.tadese.business.data.network.ApiResponseHandler
-import com.tadese.business.data.network.abstraction.TodoNetworkDatasource
+import com.tadese.business.data.network.abstraction.AppNetworkDatasource
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.state.*
 import com.tadese.framework.presentation.authentication.state.AuthenticationStateEvent
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class UserLogin(
-    private val todoNetworkDataSource: TodoNetworkDatasource,
+    private val todoNetworkDataSource: AppNetworkDatasource,
     private val appCacheDataSource: AppCacheDataSource
 ) {
     suspend fun login(stateEvent: AuthenticationStateEvent.AuthenticateUserEvent): Flow<DataState<LoginUser>?> =

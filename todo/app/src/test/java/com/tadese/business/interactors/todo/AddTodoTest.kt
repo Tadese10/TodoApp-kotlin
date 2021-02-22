@@ -4,7 +4,7 @@ import com.tadese.business.data.cache.FakeAppCacheDataSourceImpl
 import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl.Companion.FORCE_ADD_TODO_GENERAL_EXCEPTION
 import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl.Companion.SQLiteError
 import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl.Companion.WrongUserId
-import com.tadese.business.data.network.abstraction.TodoNetworkDatasource
+import com.tadese.business.data.network.abstraction.AppNetworkDatasource
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.model.todo.Todo
 import com.tadese.business.domain.state.DataState
@@ -36,7 +36,7 @@ class AddTodoTest {
     // dependencies
     private val dependencyContainer: DependencyContainer = DependencyContainer()
     private val todoCacheDataSource: FakeAppCacheDataSourceImpl
-    private val todoNetworkDataSource: TodoNetworkDatasource
+    private val todoNetworkDataSource: AppNetworkDatasource
     private var loggedInUser : LoginUser? = null
 
     init {
