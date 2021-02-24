@@ -31,6 +31,8 @@ constructor(
 
     override suspend fun saveUserTodos(usersTodo: List<Todo>) = appDaoService.saveUserTodos(usersTodo)
 
+    override suspend fun deleteTodos(todos: List<Int>) = appDaoService.deleteTodos(todos)
+
     override suspend fun savePosts(posts: List<Post>) = appDaoService.savePosts(posts)
 
 }

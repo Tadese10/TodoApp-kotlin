@@ -70,7 +70,7 @@ class GetAllTodoOnNetworkByUserId(
 
             printLogD(handler.javaClass.name, handler.toString())
 
-            handler.data?.latestUserTodoList.let {
+            handler.data?.latestUserTodoList?.let {
                 saveUsersTodoToCachedata(it!!)//Cache the response
             }
 
@@ -80,10 +80,27 @@ class GetAllTodoOnNetworkByUserId(
 
     private suspend fun saveUsersTodoToCachedata(userTodoList: List<Todo>) {
         //Check if network returned same cached data
-        if(appCacheDataSource.getAllTodo() != userTodoList){
-            appCacheCall(Dispatchers.IO){
-                appCacheDataSource.saveUserTodos(userTodoList)
+        var cachedTodo = appCacheDataSource.getAllTodo()
+        if(cachedTodo.isNullOrEmpty()){
+            save(userTodoList)
+            printLogD("Todo Cached Data ", "Todo Cached Data is null")
+        }
+        else{
+            if(cachedTodo != userTodoList){
+                printLogD("Differences in Net and Cached Data", "Yes")
+                var dataToBeDeletedIds = userTodoList.filter { todo -> cachedTodo.any { it.id == todo!!.id } }.map { it.id }
+                if(!dataToBeDeletedIds.isNullOrEmpty()){
+                    appCacheDataSource.deleteTodos(dataToBeDeletedIds)
+                    printLogD("Deleted todos: ", dataToBeDeletedIds.toString())
+                }
+                save(userTodoList)
             }
+        }
+    }
+
+    suspend fun save(data: List<Todo>){
+        appCacheCall(Dispatchers.IO){
+            appCacheDataSource.saveUserTodos(data)
         }
     }
 

@@ -70,7 +70,7 @@ interface TodoDao {
     suspend fun insertTodos(todos: List<TodoEntity>): LongArray
 
     @Query("DELETE FROM ${TodoEntity.name} WHERE id IN (:ids)")
-    suspend fun deleteTodos(ids: List<String>): Int
+    suspend fun deleteTodos(ids: List<Int>): Int
 
     @Query("DELETE FROM ${TodoEntity.name}")
     suspend fun deleteAllTodos(): Int

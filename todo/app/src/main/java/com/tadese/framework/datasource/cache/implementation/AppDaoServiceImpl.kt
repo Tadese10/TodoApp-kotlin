@@ -51,6 +51,10 @@ constructor(
         return postDao.insertTodos(todoCacheMapper.mapToEntityList(usersTodo))
     }
 
+    override suspend fun deleteTodos(todos: List<Int>): Int {
+        return postDao.deleteTodos(todos)
+    }
+
     override suspend fun saveLoggedInUserData(data: LoginUser): Long {
         return postDao.insertLoggedInUser(loggedInUserCacheMapper.mapToEntity(data))
     }

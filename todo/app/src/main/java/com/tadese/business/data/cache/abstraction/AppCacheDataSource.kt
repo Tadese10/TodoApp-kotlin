@@ -28,5 +28,7 @@ interface AppCacheDataSource {
 
     suspend fun saveUserTodos(usersTodo: List<Todo>):LongArray
 
+    suspend fun deleteTodos(todos: List<Int>): Int
+
     suspend fun savePosts(posts: List<Post>): LongArray
 }
