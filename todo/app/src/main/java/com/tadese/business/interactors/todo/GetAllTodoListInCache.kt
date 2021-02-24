@@ -10,24 +10,21 @@ import com.tadese.business.domain.state.Response
 import com.tadese.business.domain.state.UIComponentType
 import com.tadese.framework.presentation.todo.state.TodoStateEvent
 import com.tadese.framework.presentation.todo.state.TodoViewState
+import com.tadese.util.printLogD
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 
-class SearchTodoList(
+class GetAllTodoListInCache(
     private val appCacheDataSource: AppCacheDataSource
 ) {
-    suspend fun searchTodoList(
-        stateEvent: TodoStateEvent.SearchTodoListEvent
+    fun getAll(
+        stateEvent: TodoStateEvent.GetAllUserTodoInCacheEvent
     ): Flow<DataState<TodoViewState>> = flow {
 
         val networkResult = appApiCall(Dispatchers.IO) {
-            appCacheDataSource.searchTodo(
-                stateEvent.query,
-                stateEvent.filterAndOrder,
-                stateEvent.page
-            )
+            appCacheDataSource.getAllTodoByPage(stateEvent.page)
         }
 
         var handler = object : ApiResponseHandler<TodoViewState, List<Todo>>(
@@ -37,13 +34,14 @@ class SearchTodoList(
 
             override suspend fun handleSuccess(resultObj: List<Todo>): DataState<TodoViewState> {
 
+                printLogD("Cache Response", resultObj.toString())
                 val viewState = TodoViewState(
                     userTodoList = resultObj
                 )
-                var message: String? = SEARCH_TODO_SUCCESS
+                var message: String? = GET_ALL_TODO_LIST_IN_CACHE_SUCCESS
                 var uiComponentType: UIComponentType = UIComponentType.None()
                 if (resultObj.isEmpty()) {
-                    message = SEARCH_TODO_NO_MATCHING_RESULTS
+                    message = GET_TODO_LIST_IN_CACHE_SUCCESS_WITH_EMPTY_LIST
                     uiComponentType = UIComponentType.Toast()
                 }
                 return DataState.data(
@@ -66,7 +64,7 @@ class SearchTodoList(
 
 
     companion object {
-        const val SEARCH_TODO_SUCCESS = "Successfully found todo"
-        const val SEARCH_TODO_NO_MATCHING_RESULTS = "Todo not found"
+        const val GET_ALL_TODO_LIST_IN_CACHE_SUCCESS = "Successfully Fetched Todo List In Cache"
+        const val GET_TODO_LIST_IN_CACHE_SUCCESS_WITH_EMPTY_LIST = "Empty List found"
     }
 }

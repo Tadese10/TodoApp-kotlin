@@ -30,6 +30,7 @@ abstract class DataChannelManager<ViewState> {
         stateEvent: StateEvent,
         jobFunction: Flow<DataState<ViewState>?>
     ){
+        printLogD("DCM", "received job: ${stateEvent.eventName()}")
         if(canExecuteNewStateEvent(stateEvent)){
             printLogD("DCM", "launching job: ${stateEvent.eventName()}")
             addStateEvent(stateEvent)
@@ -56,10 +57,13 @@ abstract class DataChannelManager<ViewState> {
     private fun canExecuteNewStateEvent(stateEvent: StateEvent): Boolean{
         // If a job is already active, do not allow duplication
         if(isJobAlreadyActive(stateEvent)){
+            printLogD("DCM", "Job is active: ${stateEvent.eventName()}")
             return false
         }
         // if a dialog is showing, do not allow new StateEvents
         if(!isMessageStackEmpty()){
+            printLogD("DCM", "dialog is showing: ${messageStack}")
+            printLogD("DCM", "dialog is showing: ${stateEvent.eventName()}")
             return false
         }
         return true

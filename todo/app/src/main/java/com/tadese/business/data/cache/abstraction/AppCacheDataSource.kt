@@ -20,6 +20,8 @@ interface AppCacheDataSource {
 
     suspend fun getAllTodo(): List<Todo>
 
+    suspend fun getAllTodoByPage(page: Int): List<Todo>
+
     suspend fun saveLoggedInUserData(data: LoginUser): Long
 
     suspend fun getLoggedInUserData(): LoginUser?

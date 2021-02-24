@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="login_text_size">22sp</dimen>
+    <dimen name="login_button_top_margin">10dp</dimen>
+    <dimen name="login_progressbar_top_margin">13dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="swipe_margin">16dp</dimen>
+
+    <dimen name="toolbar_height">55dp</dimen>
+    <dimen name="toolbar_height_tall">120dp</dimen>
+    <!-- toolbar_height_tall - toolbar_height  -->
+    <dimen name="toolbar_title_offset_height">65dp</dimen>
+
+    <dimen name="default_view_margin">16dp</dimen>
+    <dimen name="default_view_margin_negative">-16dp</dimen>
+    <dimen name="toolbar_item_margin">24dp</dimen>
+    <dimen name="toolbar_title_margin">32dp</dimen>
+    <dimen name="view_between_spacing">7dp</dimen>
+    <dimen name="recyclerview_start_end_margins">5dp</dimen>
+    <dimen name="title_list_item_text_size">21sp</dimen>
+
+    <dimen name="scrollview_bottom_margin">80dp</dimen>
+    <dimen name="date_list_item_text_size">11sp</dimen>
+    <dimen name="page_title_size">20sp</dimen>
+
+</resources>

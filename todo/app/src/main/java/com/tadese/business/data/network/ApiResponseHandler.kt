@@ -16,7 +16,7 @@ constructor(
             is ApiResult.GenericError ->{
                 DataState.error(
                     response = Response(
-                        message = "${stateEvent?.errorInfo()}\n\n Reason:${response.errorMessage} ",
+                        message =response.errorMessage,// "${stateEvent?.errorInfo()}\n\n Reason:${response.errorMessage} ",
                         uiComponentType = UIComponentType.Dialog(),
                         messageType = MessageType.Error()
                     ),
@@ -26,7 +26,7 @@ constructor(
             is ApiResult.NetworkError ->{
                 DataState.error(
                     response = Response(
-                        message = "${stateEvent?.errorInfo()}\n\n Reason:${NETWORK_ERROR}",
+                        message =NETWORK_ERROR,// "${stateEvent?.errorInfo()}\n\n Reason:${NETWORK_ERROR}",
                         uiComponentType = UIComponentType.Dialog(),
                         messageType = MessageType.Error()
                     ),
@@ -38,7 +38,7 @@ constructor(
                 if(response.value == null){
                     DataState.error(
                         response = Response(
-                            message = "${stateEvent?.errorInfo()}\n\n Reason:${NETWORK_DATA_NULL} ",
+                            message = NETWORK_DATA_NULL, // "${stateEvent?.errorInfo()}\n\n Reason:${NETWORK_DATA_NULL} ",
                             uiComponentType = UIComponentType.Dialog(),
                             messageType = MessageType.Error()
                         ),

@@ -12,16 +12,17 @@ import com.tadese.business.domain.state.Response
 import com.tadese.business.domain.state.UIComponentType
 import com.tadese.framework.presentation.todo.state.TodoStateEvent
 import com.tadese.framework.presentation.todo.state.TodoViewState
+import com.tadese.util.printLogD
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class GetAllTodoByUserId(
+class GetAllTodoOnNetworkByUserId(
     private val todoNetworkDataSource: AppNetworkDatasource,
     private val appCacheDataSource: AppCacheDataSource
 )
 {
-    suspend fun getAllTodoByUserId(
+    fun getAllTodoByUserId(
         stateEvent : TodoStateEvent.GetAllUserTodoEvent
     ) : Flow<DataState<TodoViewState>> = flow{
 
@@ -35,50 +36,59 @@ class GetAllTodoByUserId(
         ) {
 
             override suspend fun handleSuccess(resultObj: List<Todo>): DataState<TodoViewState> {
-
+                printLogD("NetworkResponse", resultObj.toString())
                 val viewState = TodoViewState(
-                    userTodoList = resultObj
+                    latestUserTodoList = resultObj
                 )
-                return  DataState.data(
-                    response = Response(
-                        message = FETCHING_USER_TODOS_LIST_WAS_SUCCESSFUL,
-                        uiComponentType = UIComponentType.None(),
-                        messageType = MessageType.Success()
-                    ),
-                    data = viewState,
-                    stateEvent = stateEvent
-                )
+
+                if(resultObj.isNullOrEmpty()){
+                  return  DataState.data(
+                        response = Response(
+                            message = FETCHING_USER_TODOS_LIST_ON_NETWORK_EMPTY,
+                            uiComponentType = UIComponentType.Toast(),
+                            messageType = MessageType.Success()
+                        ),
+                        data = viewState,
+                        stateEvent = stateEvent
+                    )
+                }
+                else{
+                    return  DataState.data(
+                        response = Response(
+                            message = FETCHING_USER_TODOS_LIST_ON_NETWORK_WAS_SUCCESSFUL,
+                            uiComponentType = UIComponentType.None(),
+                            messageType = MessageType.Success()
+                        ),
+                        data = viewState,
+                        stateEvent = stateEvent
+                    )
+                }
+
             }
 
         }.getResult()
 
-        if(handler.data == null){
-            emit(DataState.data(
-                response = Response(
-                    message = FETCHING_USER_TODOS_LIST_FAILED,
-                    uiComponentType = UIComponentType.Dialog(),
-                    messageType = MessageType.Error()
-                ),
-                data = handler.data,
-                stateEvent = stateEvent
-            ))
-        }else {
-            handler.data?.let {
-                saveUsersTodoToCachedata(it.userTodoList)//Cache the response
+            printLogD(handler.javaClass.name, handler.toString())
+
+            handler.data?.latestUserTodoList.let {
+                saveUsersTodoToCachedata(it!!)//Cache the response
             }
 
-            emit(handler)
-        }
+        emit(handler)
+
     }
 
     private suspend fun saveUsersTodoToCachedata(userTodoList: List<Todo>) {
+        //Check if network returned same cached data
+        if(appCacheDataSource.getAllTodo() != userTodoList){
             appCacheCall(Dispatchers.IO){
                 appCacheDataSource.saveUserTodos(userTodoList)
             }
+        }
     }
 
     companion object{
-        const val FETCHING_USER_TODOS_LIST_WAS_SUCCESSFUL = "FETCHING_USER_TODOS_LIST_WAS_SUCCESSFUL"
-        const val FETCHING_USER_TODOS_LIST_FAILED = "FETCHING_USER_TODOS_LIST_FAILED"
+        const val FETCHING_USER_TODOS_LIST_ON_NETWORK_WAS_SUCCESSFUL = "Successfully fetched Todo online."
+        const val FETCHING_USER_TODOS_LIST_ON_NETWORK_EMPTY = "No Todo found online. Please add one."
     }
 }

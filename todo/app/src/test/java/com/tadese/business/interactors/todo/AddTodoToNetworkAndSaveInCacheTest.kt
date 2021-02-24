@@ -8,8 +8,8 @@ import com.tadese.business.data.network.abstraction.AppNetworkDatasource
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.model.todo.Todo
 import com.tadese.business.domain.state.DataState
-import com.tadese.business.interactors.todo.AddTodo.Companion.ADD_USER_TODO_FAILED
-import com.tadese.business.interactors.todo.AddTodo.Companion.ADD_USER_TODO_SUCCESSFUL
+import com.tadese.business.interactors.todo.AddTodoToNetworkAndSaveInCache.Companion.ADD_USER_TODO_FAILED
+import com.tadese.business.interactors.todo.AddTodoToNetworkAndSaveInCache.Companion.ADD_USER_TODO_SUCCESSFUL
 import com.tadese.di.DependencyContainer
 import com.tadese.framework.presentation.todo.state.TodoStateEvent
 import com.tadese.framework.presentation.todo.state.TodoViewState
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test
 import java.util.*
 
 @InternalCoroutinesApi
-class AddTodoTest {
+class AddTodoToNetworkAndSaveInCacheTest {
 
     /*
         Use Cases
@@ -31,7 +31,7 @@ class AddTodoTest {
      */
 
     //System in test
-    private val addTodo : AddTodo
+    private val addTodoToNetworkAndSaveInCache : AddTodoToNetworkAndSaveInCache
 
     // dependencies
     private val dependencyContainer: DependencyContainer = DependencyContainer()
@@ -43,7 +43,7 @@ class AddTodoTest {
         dependencyContainer.build()
         todoCacheDataSource = dependencyContainer.todoCacheDataSource
         todoNetworkDataSource = dependencyContainer.todoNetworkDatasource
-        addTodo = AddTodo(
+        addTodoToNetworkAndSaveInCache = AddTodoToNetworkAndSaveInCache(
             todoNetworkDataSource = todoNetworkDataSource,
             appCacheDataSource = todoCacheDataSource
         )
@@ -65,7 +65,7 @@ class AddTodoTest {
             title = UUID.randomUUID().toString(),
             completed = false,
         )
-        addTodo.addTodo(TodoStateEvent.AddTodoEvent(todoData)).collect(
+        addTodoToNetworkAndSaveInCache.addTodo(TodoStateEvent.AddTodoEvent(todoData)).collect(
             object : FlowCollector<DataState<TodoViewState>>{
                 override suspend fun emit(value: DataState<TodoViewState>) {
 
@@ -91,7 +91,7 @@ class AddTodoTest {
             completed = false,
             id = todoCacheDataSource.getNumTodo() + 1 //Get total todo and increment it
         )
-        addTodo.addTodo(TodoStateEvent.AddTodoEvent(todoData)).collect(
+        addTodoToNetworkAndSaveInCache.addTodo(TodoStateEvent.AddTodoEvent(todoData)).collect(
             object : FlowCollector<DataState<TodoViewState>>{
                 override suspend fun emit(value: DataState<TodoViewState>) {
 
@@ -117,7 +117,7 @@ class AddTodoTest {
             completed = false,
             id = todoCacheDataSource.getNumTodo() + 1 //Get total todo and increment it
         )
-        addTodo.addTodo(TodoStateEvent.AddTodoEvent(todoData)).collect(
+        addTodoToNetworkAndSaveInCache.addTodo(TodoStateEvent.AddTodoEvent(todoData)).collect(
             object : FlowCollector<DataState<TodoViewState>>{
                 override suspend fun emit(value: DataState<TodoViewState>) {
 
@@ -143,7 +143,7 @@ class AddTodoTest {
             completed = false,
             id = todoCacheDataSource.getNumTodo() + 1 //Get total todo and increment it
         )
-        addTodo.addTodo(TodoStateEvent.AddTodoEvent(todoData)).collect(
+        addTodoToNetworkAndSaveInCache.addTodo(TodoStateEvent.AddTodoEvent(todoData)).collect(
             object : FlowCollector<DataState<TodoViewState>>{
                 override suspend fun emit(value: DataState<TodoViewState>) {
 

@@ -9,6 +9,8 @@ import com.tadese.business.data.network.abstraction.AppNetworkDatasource
 import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.state.*
 import com.tadese.framework.presentation.authentication.state.AuthenticationStateEvent
+import com.tadese.framework.presentation.authentication.state.AuthenticationViewState
+import com.tadese.framework.presentation.comment.state.CommentViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -17,25 +19,28 @@ class UserLogin(
     private val todoNetworkDataSource: AppNetworkDatasource,
     private val appCacheDataSource: AppCacheDataSource
 ) {
-    suspend fun login(stateEvent: AuthenticationStateEvent.AuthenticateUserEvent): Flow<DataState<LoginUser>?> =
+    fun login(stateEvent: AuthenticationStateEvent.AuthenticateUserEvent): Flow<DataState<AuthenticationViewState>?> =
         flow {
 
             val networkResult = appApiCall(Dispatchers.IO) {
                 todoNetworkDataSource.loginUser(stateEvent.username)
             }
 
-            val response = object : ApiResponseHandler<LoginUser, LoginUser>(
+            val response = object : ApiResponseHandler<AuthenticationViewState, LoginUser>(
                 response = networkResult,
                 stateEvent = null
             ) {
-                override suspend fun handleSuccess(resultObj: LoginUser): DataState<LoginUser> {
+                override suspend fun handleSuccess(resultObj: LoginUser): DataState<AuthenticationViewState> {
+                    val data = AuthenticationViewState(
+                        userLogin = resultObj
+                    )
                     return DataState.data(
                         response = Response(
                             message = AUTHENTICATION_SUCCESSFUL,
                             uiComponentType = UIComponentType.None(),
                             messageType = MessageType.Success()
                         ),
-                        data = resultObj,
+                        data = data,
                         stateEvent = stateEvent
                     )
 
@@ -45,17 +50,14 @@ class UserLogin(
 
             response.data?.let {
                 var savedResponse = saveUserLoggedInData(response.data, stateEvent)
-
-                savedResponse?.data?.let {
-                    emit(response)
-                }
             }
 
+            emit(response)
         }
 
-    private suspend fun saveUserLoggedInData(data: LoginUser?, stateEvent : AuthenticationStateEvent.AuthenticateUserEvent): DataState<Long>? {
+    private suspend fun saveUserLoggedInData(data: AuthenticationViewState?, stateEvent : AuthenticationStateEvent.AuthenticateUserEvent): DataState<Long>? {
         val response  = appCacheCall(Dispatchers.IO) {
-            appCacheDataSource.saveLoggedInUserData(data!!)
+            appCacheDataSource.saveLoggedInUserData(data?.userLogin!!)
         }
 
         var handler = object : CacheResponseHandler<Long, Long>(

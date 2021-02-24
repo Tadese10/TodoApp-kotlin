@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 @InternalCoroutinesApi
-class SearchTodoListTest {
+class SearchTodoListInCacheTest {
 
     /*
         Test cases
@@ -25,7 +25,7 @@ class SearchTodoListTest {
      */
 
     //System in test
-    private val searchTodoList : SearchTodoList
+    private val searchTodoListInCache : SearchTodoListInCache
 
     // dependencies
     private val dependencyContainer: DependencyContainer = DependencyContainer()
@@ -39,13 +39,13 @@ class SearchTodoListTest {
         dependencyContainer.build()
         todoCacheDataSource = dependencyContainer.todoCacheDataSource
         todoNetworkDataSource = dependencyContainer.todoNetworkDatasource
-        searchTodoList = SearchTodoList(
+        searchTodoListInCache = SearchTodoListInCache(
             appCacheDataSource = todoCacheDataSource
         )
 
         //Login User
         runBlocking {
-            loggedInUser = todoNetworkDataSource.loginUser(AddTodoTest.RightUsername)
+            loggedInUser = todoNetworkDataSource.loginUser(AddTodoToNetworkAndSaveInCacheTest.RightUsername)
         }
 
     }
@@ -53,7 +53,7 @@ class SearchTodoListTest {
     @Test
     fun SearchTodoListQuery_Success_ConfirmListRetrieved() = runBlocking {
 
-        searchTodoList.searchTodoList(TodoStateEvent.SearchTodoListEvent(
+        searchTodoListInCache.searchTodoList(TodoStateEvent.SearchTodoListEvent(
             query = loggedInUser?.id.toString(),
             filterAndOrder = filterAndOrder,
             page = 1
@@ -77,7 +77,7 @@ class SearchTodoListTest {
 
     @Test
     fun SearchTodoListEmptyQuery_Success_ConfirmListRetrieved() = runBlocking {
-        searchTodoList.searchTodoList(TodoStateEvent.SearchTodoListEvent(
+        searchTodoListInCache.searchTodoList(TodoStateEvent.SearchTodoListEvent(
             query = empty_query,
             filterAndOrder = filterAndOrder,
             page = 1
@@ -101,7 +101,7 @@ class SearchTodoListTest {
 
     @Test
     fun SearchTodoListRandomQuery_Success_ConfirmNoListRetrieved() = runBlocking {
-        searchTodoList.searchTodoList(TodoStateEvent.SearchTodoListEvent(
+        searchTodoListInCache.searchTodoList(TodoStateEvent.SearchTodoListEvent(
             query = random_query,
             filterAndOrder = filterAndOrder,
             page = 1
@@ -120,7 +120,7 @@ class SearchTodoListTest {
 
     @Test
     fun SearchTodoList_Failed_GeneralExceptionConfirmNoListRetrieved() = runBlocking {
-        searchTodoList.searchTodoList(TodoStateEvent.SearchTodoListEvent(
+        searchTodoListInCache.searchTodoList(TodoStateEvent.SearchTodoListEvent(
             query = FakeAppCacheDataSourceImpl.FORCE_TODO_SEARCH_GENERAL_EXCEPTION,
             filterAndOrder = filterAndOrder,
             page = 1

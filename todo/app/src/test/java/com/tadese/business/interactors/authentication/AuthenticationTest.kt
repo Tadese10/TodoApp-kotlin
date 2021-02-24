@@ -2,13 +2,15 @@ package com.tadese.business.interactors.authentication
 
 import com.tadese.business.data.cache.abstraction.AppCacheDataSource
 import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl.Companion.FORCE_LOGIN_GENERAL_EXCEPTION
+import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl.Companion.SOMETHING_WENT_WRONG
+import com.tadese.business.data.network.FakeTodoNetworkDataSourceImpl.Companion.USERNAME_EMPTY
 import com.tadese.business.data.network.NetworkErrors.NETWORK_DATA_NULL
 import com.tadese.business.data.network.NetworkErrors.NETWORK_ERROR_UNKNOWN
 import com.tadese.business.data.network.abstraction.AppNetworkDatasource
-import com.tadese.business.domain.model.login.LoginUser
 import com.tadese.business.domain.state.DataState
 import com.tadese.di.DependencyContainer
 import com.tadese.framework.presentation.authentication.state.AuthenticationStateEvent
+import com.tadese.framework.presentation.authentication.state.AuthenticationViewState
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.runBlocking
@@ -47,16 +49,16 @@ class AuthenticationTest {
     @Test
     fun UserAuthenticate_Success_RightUsername() = runBlocking {
         userLogin.login(AuthenticationStateEvent.AuthenticateUserEvent(RightUsername))
-            .collect(object : FlowCollector<DataState<LoginUser>?>{
+            .collect(object : FlowCollector<DataState<AuthenticationViewState>?>{
 
-                override suspend fun emit(value: DataState<LoginUser>?) {
+                override suspend fun emit(value: DataState<AuthenticationViewState>?) {
                     assertEquals(
                         value?.stateMessage?.response?.message,
                         UserLogin.AUTHENTICATION_SUCCESSFUL
                     )
 
                     //Confirm if the user's data was cached
-                    assertEquals(appCacheDataSource.getLoggedInUserData(),value!!.data)
+                    assertEquals(appCacheDataSource.getLoggedInUserData(),value!!.data?.userLogin)
                 }
 
             })
@@ -65,9 +67,9 @@ class AuthenticationTest {
     @Test
     fun UserAuthenticate_Failed_WrongUsername() = runBlocking {
        userLogin.login(AuthenticationStateEvent.AuthenticateUserEvent(Wrong_Username))
-            .collect(object : FlowCollector<DataState<LoginUser>?>{
+            .collect(object : FlowCollector<DataState<AuthenticationViewState>?>{
 
-                override suspend fun emit(value: DataState<LoginUser>?) {
+                override suspend fun emit(value: DataState<AuthenticationViewState>?) {
                     assert(
                         value?.stateMessage?.response?.message!!.contains(NETWORK_DATA_NULL)
                     )
@@ -82,11 +84,11 @@ class AuthenticationTest {
     @Test
     fun UserAuthenticate_Failed_ForceGeneralException() = runBlocking {
         userLogin.login(AuthenticationStateEvent.AuthenticateUserEvent(FORCE_LOGIN_GENERAL_EXCEPTION))
-            .collect(object : FlowCollector<DataState<LoginUser>?>{
+            .collect(object : FlowCollector<DataState<AuthenticationViewState>?>{
 
-                override suspend fun emit(value: DataState<LoginUser>?) {
+                override suspend fun emit(value: DataState<AuthenticationViewState>?) {
                     assert(
-                        value?.stateMessage?.response?.message!!.contains(NETWORK_ERROR_UNKNOWN)
+                        value?.stateMessage?.response?.message!!.contains(SOMETHING_WENT_WRONG)
                     )
                 }
 
@@ -99,11 +101,11 @@ class AuthenticationTest {
     @Test
     fun UserAuthenticate_Failed_EmptyUsername() = runBlocking {
         userLogin.login(AuthenticationStateEvent.AuthenticateUserEvent(Empty_Username))
-            .collect(object : FlowCollector<DataState<LoginUser>?>{
+            .collect(object : FlowCollector<DataState<AuthenticationViewState>?>{
 
-                override suspend fun emit(value: DataState<LoginUser>?) {
+                override suspend fun emit(value: DataState<AuthenticationViewState>?) {
                     assert(
-                        value?.stateMessage?.response?.message!!.contains(NETWORK_ERROR_UNKNOWN)
+                        value?.stateMessage?.response?.message!!.contains(USERNAME_EMPTY)
                     )
                 }
 

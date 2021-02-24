@@ -6,6 +6,8 @@ import com.tadese.framework.datasource.cache.model.TodoEntity
 import com.tadese.framework.datasource.cache.model.UsersEntity
 
 const val TODO_PAGINATION_PAGE_SIZE = 30
+const val TODO_FILTER_TITLE = "title"
+const val TODO_FILTER_USER_ID = "userId"
 
 @Dao
 interface TodoDao {
@@ -107,6 +109,13 @@ interface TodoDao {
 
     @Query("""
         SELECT * FROM ${TodoEntity.name} 
+        LIMIT (:page * :pageSize)
+        """)
+    fun getAllTodoByPage(page: Int, pageSize : Int = TODO_PAGINATION_PAGE_SIZE): List<TodoEntity>
+
+
+    @Query("""
+        SELECT * FROM ${TodoEntity.name} 
         WHERE id = :id
         """)
     suspend fun findTodoById(id: Int): TodoEntity
@@ -117,6 +126,4 @@ interface TodoDao {
 
     @Query("SELECT * FROM ${UsersEntity.table_name}")
     suspend fun findLoggedInUser(): List<UsersEntity>
-
-
 }

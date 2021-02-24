@@ -6,6 +6,10 @@ import com.tadese.business.domain.model.post.Post
 import com.tadese.business.domain.model.todo.Todo
 import com.tadese.framework.datasource.network.abstraction.AppNetworkService
 import com.tadese.framework.datasource.network.api.AppNetworkServiceApi
+import com.tadese.util.printLogD
+import okhttp3.ResponseBody
+import retrofit2.HttpException
+import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,11 +25,11 @@ constructor(
         val response = appNetworkServiceApi.loginUser(username)
         try {
             val apiResponse: List<LoginUser>? = response.body()
-            return if(apiResponse?.size!! > 0){
+            return if(apiResponse?.isEmpty() == false){
                 apiResponse[0]
             }else
             {
-                null
+                throw AppException("Wrong Username.")
             }
         } catch (ex: Exception) {
             ex.printStackTrace()
@@ -50,6 +54,7 @@ constructor(
             //val response = callSync.execute()
             var result :  List<Todo>? =  response.body()
             return if(!result.isNullOrEmpty()){
+                printLogD("getAllTodoByUserId", result.toString())
                 result
             }else{
                 ArrayList()
@@ -162,6 +167,16 @@ constructor(
         } catch (ex: Exception) {
             ex.printStackTrace()
             throw Exception(ex)
+        }
+    }
+
+    companion object{
+
+        class AppException : Exception {
+            constructor() : super()
+            constructor(message: String) : super(message)
+            constructor(message: String, cause: Throwable) : super(message, cause)
+            constructor(cause: Throwable) : super(cause)
         }
     }
 

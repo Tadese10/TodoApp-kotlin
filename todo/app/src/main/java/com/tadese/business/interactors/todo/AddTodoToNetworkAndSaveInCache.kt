@@ -17,12 +17,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 
-class AddTodo(
+class AddTodoToNetworkAndSaveInCache(
     private val todoNetworkDataSource: AppNetworkDatasource,
     private val appCacheDataSource: AppCacheDataSource
 )
 {
-    suspend fun addTodo(
+    fun addTodo(
         stateEvent : TodoStateEvent.AddTodoEvent
     ) : Flow<DataState<TodoViewState>> = flow{
 

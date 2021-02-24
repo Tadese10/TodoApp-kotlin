@@ -31,6 +31,7 @@ class StateEventManager {
     }
 
     fun addStateEvent(stateEvent: StateEvent){
+        printLogD("DCM sem", "added state event: ${stateEvent?.eventName()}")
         //EspressoIdlingResource.increment()
         activeStateEvents.put(stateEvent.eventName(), stateEvent)
         syncNumActiveStateEvents()

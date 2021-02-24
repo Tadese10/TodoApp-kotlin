@@ -23,6 +23,8 @@ constructor(
 
     override suspend fun getAllTodo() = appDaoService.getAllTodo()
 
+    override suspend fun getAllTodoByPage(page: Int) = appDaoService.getAllTodoByPage(page)
+
     override suspend fun saveLoggedInUserData(data: LoginUser) = appDaoService.saveLoggedInUserData(data)
 
     override suspend fun getLoggedInUserData() = appDaoService.getLoggedInUserData()

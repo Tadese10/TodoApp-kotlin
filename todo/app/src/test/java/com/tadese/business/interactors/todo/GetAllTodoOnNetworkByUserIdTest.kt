@@ -15,7 +15,7 @@ import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 
 @InternalCoroutinesApi
-class GetAllTodoByUserIdTest {
+class GetAllTodoOnNetworkByUserIdTest {
 
     /*
             Use Cases
@@ -27,7 +27,7 @@ class GetAllTodoByUserIdTest {
      */
 
     //System in test
-    private val _getAllTodoByUserId : GetAllTodoByUserId
+    private val _getAllTodoOnNetworkByUserId : GetAllTodoOnNetworkByUserId
 
     // dependencies
     private val dependencyContainer: DependencyContainer = DependencyContainer()
@@ -39,7 +39,7 @@ class GetAllTodoByUserIdTest {
         dependencyContainer.build()
         todoCacheDataSource = dependencyContainer.todoCacheDataSource
         todoNetworkDataSource = dependencyContainer.todoNetworkDatasource
-        _getAllTodoByUserId = GetAllTodoByUserId(
+        _getAllTodoOnNetworkByUserId = GetAllTodoOnNetworkByUserId(
             todoNetworkDataSource = todoNetworkDataSource,
             appCacheDataSource = todoCacheDataSource
         )
@@ -53,15 +53,15 @@ class GetAllTodoByUserIdTest {
     @Test
     fun FetchTodoList_Success_RightUserIdConfirmNetworkCacheData() = runBlocking {
 
-        _getAllTodoByUserId.getAllTodoByUserId(TodoStateEvent.GetAllUserTodoEvent(loggedInUser!!.id.toString()))
+        _getAllTodoOnNetworkByUserId.getAllTodoByUserId(TodoStateEvent.GetAllUserTodoEvent(loggedInUser!!.id.toString()))
             .collect(object : FlowCollector<DataState<TodoViewState>>{
 
                 override suspend fun emit(value: DataState<TodoViewState>) {
 
-                    assertEquals(value.data?.userTodoList?.isEmpty(), false)
+                    assertEquals(value.data?.latestUserTodoList?.isEmpty(), false)
 
                     assertEquals(value.stateMessage?.response?.message,
-                        GetAllTodoByUserId.FETCHING_USER_TODOS_LIST_WAS_SUCCESSFUL
+                        GetAllTodoOnNetworkByUserId.FETCHING_USER_TODOS_LIST_WAS_SUCCESSFUL
                     )
 
                     assertEquals(
@@ -76,7 +76,7 @@ class GetAllTodoByUserIdTest {
     @Test
     fun FetchTodoList_Failed_RightUserIdGeneralExceptionConfirmFailedCacheData() = runBlocking {
 
-         _getAllTodoByUserId.getAllTodoByUserId(TodoStateEvent.GetAllUserTodoEvent(
+         _getAllTodoOnNetworkByUserId.getAllTodoByUserId(TodoStateEvent.GetAllUserTodoEvent(
             FakeTodoNetworkDataSourceImpl.FORCE_GENERAL_EXCEPTION
         ))
             .collect(object : FlowCollector<DataState<TodoViewState>>{
@@ -86,7 +86,7 @@ class GetAllTodoByUserIdTest {
                     assertNull(value.data)//Assert that the data is null because of the exception thrown
 
                     assertEquals(value.stateMessage?.response?.message,
-                        GetAllTodoByUserId.FETCHING_USER_TODOS_LIST_FAILED
+                        GetAllTodoOnNetworkByUserId.FETCHING_USER_TODOS_LIST_FAILED
                     )
                 }
 
@@ -99,12 +99,12 @@ class GetAllTodoByUserIdTest {
     @Test
     fun FetchTodoList_Failed_RightUserIdSQLiteErrorConfirmFailedCacheData() = runBlocking {
         todoCacheDataSource.throwSQLiteError = true
-        _getAllTodoByUserId.getAllTodoByUserId(TodoStateEvent.GetAllUserTodoEvent(loggedInUser!!.id.toString()))
+        _getAllTodoOnNetworkByUserId.getAllTodoByUserId(TodoStateEvent.GetAllUserTodoEvent(loggedInUser!!.id.toString()))
             .collect(object : FlowCollector<DataState<TodoViewState>>{
 
                 override suspend fun emit(value: DataState<TodoViewState>) {
 
-                    assertEquals(value.data?.userTodoList?.isEmpty(),false) //Confirm that list of todo received
+                    assertEquals(value.data?.latestUserTodoList?.isEmpty(),false) //Confirm that list of todo received
 
                     assertTrue(todoCacheDataSource.getAllTodo().isEmpty())//Confirm cache todo list is empty
                 }
@@ -114,7 +114,7 @@ class GetAllTodoByUserIdTest {
 
     @Test
     fun FetchTodoList_Failed_WrongUserIdConfirmEmptyNetworkCacheData() = runBlocking {
-        _getAllTodoByUserId.getAllTodoByUserId(TodoStateEvent.GetAllUserTodoEvent(Wrong_UserId))
+        _getAllTodoOnNetworkByUserId.getAllTodoByUserId(TodoStateEvent.GetAllUserTodoEvent(Wrong_UserId))
             .collect(object : FlowCollector<DataState<TodoViewState>>{
 
                 override suspend fun emit(value: DataState<TodoViewState>) {
@@ -130,7 +130,7 @@ class GetAllTodoByUserIdTest {
 
     @Test
     fun FetchTodoList_Failed_EmptyUserIdConfirmFailedCacheData() = runBlocking {
-        _getAllTodoByUserId.getAllTodoByUserId(TodoStateEvent.GetAllUserTodoEvent(Empty_UserId))
+        _getAllTodoOnNetworkByUserId.getAllTodoByUserId(TodoStateEvent.GetAllUserTodoEvent(Empty_UserId))
             .collect(object : FlowCollector<DataState<TodoViewState>>{
 
                 override suspend fun emit(value: DataState<TodoViewState>) {

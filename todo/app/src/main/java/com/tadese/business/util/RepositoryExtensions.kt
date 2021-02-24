@@ -10,6 +10,7 @@ import com.tadese.business.data.network.ApiResult
 import com.tadese.business.data.network.NetworkConstants.NETWORK_TIMEOUT
 import com.tadese.business.data.network.NetworkErrors.NETWORK_ERROR_TIMEOUT
 import com.tadese.business.data.network.NetworkErrors.NETWORK_ERROR_UNKNOWN
+import com.tadese.framework.datasource.network.implementation.AppNetworkServiceImple
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 import java.io.IOException
@@ -38,6 +39,9 @@ suspend fun <T> appApiCall(
                 is IOException -> {
                     ApiResult.NetworkError
                 }
+                is AppNetworkServiceImple.Companion.AppException -> {
+                    ApiResult.GenericError(404, throwable.message)
+                }
                 is HttpException -> {
                     val code = throwable.code()
                     val errorResponse = convertErrorBody(throwable)
@@ -51,7 +55,12 @@ suspend fun <T> appApiCall(
                     //cLog(NETWORK_ERROR_UNKNOWN)
                     ApiResult.GenericError(
                         null,
-                        NETWORK_ERROR_UNKNOWN
+                        try {
+                            throwable.message?.split(":")?.get(1)?.trim()
+                        }catch (ex: Exception)
+                        {
+                            throwable.message
+                        }
                     )
                 }
             }

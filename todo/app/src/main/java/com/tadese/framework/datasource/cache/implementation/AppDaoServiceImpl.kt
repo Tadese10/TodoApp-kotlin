@@ -8,6 +8,7 @@ import com.tadese.framework.datasource.cache.database.TodoDao
 import com.tadese.framework.datasource.cache.model.LoggedInUserCacheMapper
 import com.tadese.framework.datasource.cache.model.PostCacheMapper
 import com.tadese.framework.datasource.cache.model.TodoCacheMapper
+import com.tadese.util.printLogD
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -41,7 +42,12 @@ constructor(
         return todoCacheMapper.mapFromEntityList(postDao.getAllTodos())
     }
 
+    override suspend fun getAllTodoByPage(page: Int): List<Todo> {
+        return todoCacheMapper.mapFromEntityList(postDao.getAllTodoByPage(page))
+    }
+
     override suspend fun saveUserTodos(usersTodo: List<Todo>): LongArray {
+        printLogD("SavingTodo", usersTodo.toString())
         return postDao.insertTodos(todoCacheMapper.mapToEntityList(usersTodo))
     }
 

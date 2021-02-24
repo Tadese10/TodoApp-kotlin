@@ -7,9 +7,11 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class TodoViewState constructor(
-    var userTodoList : List<Todo> = ArrayList(),
+    var userTodoList : List<Todo>? = null ,
+    var latestUserTodoList : List<Todo>? = null,
     var newTodo: Todo? = null, // todo that can be created with fab
     var searchQuery: String? = null,
+    var searchTodo: Todo? = null,
     var page: Int? = null,
     var isQueryExhausted: Boolean? = null,
     var filter: String? = null,

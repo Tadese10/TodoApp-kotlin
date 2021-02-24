@@ -19,4 +19,5 @@ sealed class AuthenticationStateEvent: StateEvent {
         override fun shouldDisplayProgressBar() = true
     }
 
+
 }

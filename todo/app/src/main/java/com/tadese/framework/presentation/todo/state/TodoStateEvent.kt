@@ -2,7 +2,6 @@ package com.tadese.framework.presentation.todo.state
 
 import com.tadese.business.domain.model.todo.Todo
 import com.tadese.business.domain.state.StateEvent
-import com.tadese.framework.presentation.authentication.state.AuthenticationStateEvent
 
 sealed class TodoStateEvent : StateEvent {
 
@@ -36,6 +35,34 @@ sealed class TodoStateEvent : StateEvent {
         override fun shouldDisplayProgressBar() = true
     }
 
+    class GetAllUserTodoInCacheEvent(
+        val page: Int
+    ) : TodoStateEvent() {
+
+        override fun errorInfo(): String {
+            return "Error fetching TODO list."
+        }
+
+        override fun eventName(): String {
+            return "GetAllUserTodoInCacheEvent"
+        }
+
+        override fun shouldDisplayProgressBar() = true
+    }
+    class GetAllUserTodoNumInCacheEvent() : TodoStateEvent() {
+
+        override fun errorInfo(): String {
+            return "Error fetching TODO list."
+        }
+
+        override fun eventName(): String {
+            return "GetAllUserTodoNumInCacheEvent"
+        }
+
+        override fun shouldDisplayProgressBar() = false
+    }
+
+
     class SearchTodoListEvent(
         val query : String,
         val filterAndOrder: String,
@@ -68,33 +95,33 @@ sealed class TodoStateEvent : StateEvent {
         override fun shouldDisplayProgressBar() = true
     }
 
-    class GetTodoNumEvent(
-    ) : TodoStateEvent() {
+//    class GetTodoNumEvent(
+//    ) : TodoStateEvent() {
+//
+//        override fun errorInfo(): String {
+//            return "Error fetching TODO."
+//        }
+//
+//        override fun eventName(): String {
+//            return "GetTodoNumEvent"
+//        }
+//
+//        override fun shouldDisplayProgressBar() = true
+//    }
 
-        override fun errorInfo(): String {
-            return "Error fetching TODO."
-        }
-
-        override fun eventName(): String {
-            return "GetTodoNumEvent"
-        }
-
-        override fun shouldDisplayProgressBar() = true
-    }
-
-    class GetAllTodoEvent(
-    ) : TodoStateEvent() {
-
-        override fun errorInfo(): String {
-            return "Error fetching TODO list."
-        }
-
-        override fun eventName(): String {
-            return "GetAllTodoEvent"
-        }
-
-        override fun shouldDisplayProgressBar() = true
-    }
+//    class GetAllTodoEvent(
+//    ) : TodoStateEvent() {
+//
+//        override fun errorInfo(): String {
+//            return "Error fetching TODO list."
+//        }
+//
+//        override fun eventName(): String {
+//            return "GetAllTodoEvent"
+//        }
+//
+//        override fun shouldDisplayProgressBar() = true
+//    }
 
 
 }

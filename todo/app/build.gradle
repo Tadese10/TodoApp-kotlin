@@ -74,7 +74,9 @@ dependencies {
     implementation Dependencies.material_dialogs
     implementation Dependencies.material_dialogs_input
     implementation Dependencies.markdown_processor
-    implementation Dependencies.multi_dex  //with androidx libraries
+    implementation Dependencies.multi_dex
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'//with androidx libraries
 
     androidTestImplementation AndroidTestDependencies.test_rules
     androidTestImplementation AndroidTestDependencies.text_core_ktx

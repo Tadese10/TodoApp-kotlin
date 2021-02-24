@@ -19,6 +19,8 @@ interface AppDaoService {
 
     suspend fun getAllTodo(): List<Todo>
 
+    suspend fun getAllTodoByPage(page: Int): List<Todo>
+
     suspend fun saveUserTodos(usersTodo: List<Todo>): LongArray
 
     suspend fun saveLoggedInUserData(data: LoginUser): Long
