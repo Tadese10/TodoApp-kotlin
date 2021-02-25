@@ -6,5 +6,7 @@ class TodoInteractors (
     val searchTodoListInCache: SearchTodoListInCache,
     val getAllTodoListInCache: GetAllTodoListInCache,
     val getAllTodoNumInCache: GetAllTodoNumInCache,
-    val searchTodoListInCacheById: SearchTodoListInCacheById
+    val searchTodoListInCacheById: SearchTodoListInCacheById,
+    val getAllTodoNumInCacheWithQuery: GetAllTodoNumInCacheWithQuery,
+    val deleteAllTodoUserInCache: DeleteAllTodoUserInCache
 )

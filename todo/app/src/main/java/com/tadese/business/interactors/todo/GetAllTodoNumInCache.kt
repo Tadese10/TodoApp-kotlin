@@ -34,7 +34,7 @@ class GetAllTodoNumInCache(
             override suspend fun handleSuccess(resultObj: Int): DataState<TodoViewState> {
 
                 val viewState = TodoViewState(
-                    numTodosInCache = resultObj
+                    numTodosInCache = resultObj,
                 )
                 var message: String? = GET_TODO_TOTAL_NUM_IN_CACHE_SUCCESS
                 var uiComponentType: UIComponentType = UIComponentType.None()

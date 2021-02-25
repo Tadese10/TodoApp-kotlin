@@ -25,7 +25,7 @@
         android:layout_weight="77"
         android:text="Some Note Title"
         android:textColor="#000"
-        android:lines="1"
+        android:lines="3"
         android:layout_marginTop="@dimen/default_view_margin"
         android:layout_marginBottom="@dimen/default_view_margin"
         android:layout_marginStart="@dimen/default_view_margin"

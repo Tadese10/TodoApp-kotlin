@@ -212,6 +212,12 @@ object AppModule {
             ),
             searchTodoListInCacheById = SearchTodoListInCacheById(
                 appCacheDataSource = appCacheDataSource
+            ),
+            getAllTodoNumInCacheWithQuery = GetAllTodoNumInCacheWithQuery(
+                appCacheDataSource = appCacheDataSource
+            ),
+            deleteAllTodoUserInCache = DeleteAllTodoUserInCache(
+                appCacheDataSource = appCacheDataSource
             )
         )
     }

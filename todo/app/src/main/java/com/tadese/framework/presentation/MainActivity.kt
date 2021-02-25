@@ -1,21 +1,19 @@
 package com.tadese.framework.presentation
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.LinearLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.navigateUp
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.afollestad.materialdialogs.input.input
@@ -27,9 +25,12 @@ import com.tadese.framework.presentation.common.displayToast
 import com.tadese.framework.presentation.common.gone
 import com.tadese.framework.presentation.common.visible
 import kotlinx.android.synthetic.main.activity_authentication.*
+import kotlinx.android.synthetic.main.activity_authentication.progress_bar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import javax.inject.Inject
+
 
 class MainActivity : AppCompatActivity() , UIController, NavigationView.OnNavigationItemSelectedListener{
 
@@ -70,7 +71,12 @@ class MainActivity : AppCompatActivity() , UIController, NavigationView.OnNaviga
         setSupportActionBar(toolbar)
         //Handle Drawer toggle
         val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+            this,
+            drawer_layout,
+            toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -84,10 +90,32 @@ class MainActivity : AppCompatActivity() , UIController, NavigationView.OnNaviga
             progress_bar.gone()
     }
 
+    override fun displayLatestChangesNotification(
+        isDisplayed: Boolean,
+        message: String?,
+        callback: OnReloadCaptureCallback
+    ) {
+        if(isDisplayed){
+            cardReload.visible()
+            txt_reload.text = message
+            OnReloadClick(callback)
+        }else{
+            cardReload.gone()
+        }
+    }
+
+    private fun OnReloadClick(callback: OnReloadCaptureCallback) {
+        txt_reload.setOnClickListener {
+            cardReload.gone()
+            callback.onReloadCaptured()
+        }
+    }
+
     override fun hideSoftKeyboard() {
         if (currentFocus != null) {
             val inputMethodManager = getSystemService(
-                Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                Context.INPUT_METHOD_SERVICE
+            ) as InputMethodManager
             inputMethodManager
                 .hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }
@@ -298,7 +326,11 @@ class MainActivity : AppCompatActivity() , UIController, NavigationView.OnNaviga
 
     private fun displayScreen(itemId: Int) {
         findNavController(R.id.nav_host_fragment).popBackStack()
-        findNavController(R.id.nav_host_fragment)?.navigate(itemId,null, NavOptions.Builder().setLaunchSingleTop(true).build())
+        findNavController(R.id.nav_host_fragment)?.navigate(
+            itemId, null, NavOptions.Builder().setLaunchSingleTop(
+                true
+            ).build()
+        )
     }
 
 }

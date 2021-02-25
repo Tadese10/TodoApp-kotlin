@@ -8,7 +8,6 @@ import com.tadese.business.domain.model.todo.Todo
 import com.tadese.business.domain.state.DataState
 import com.tadese.business.domain.state.StateEvent
 import com.tadese.business.interactors.common.CommonInteractors
-import com.tadese.business.interactors.todo.GetAllTodoNumInCache
 import com.tadese.business.interactors.todo.TodoInteractors
 import com.tadese.framework.datasource.cache.database.TODO_FILTER_TITLE
 import com.tadese.framework.datasource.preferences.PreferenceKeys.Companion.TODO_FILTER
@@ -58,7 +57,6 @@ class TodoViewModel
         val update = getCurrentViewStateOrNew()
         update.userTodoList = ArrayList()
         update.latestUserTodoList = ArrayList()
-        update.page = 1
         setViewState(update)
     }
 
@@ -81,17 +79,29 @@ class TodoViewModel
 
     fun loadFirstPage() {
         setQueryExhausted(false)
-        resetPage()
+        resetPage(true)
+        //setStateEvent(TodoStateEvent.DeleteAllTodoUserInCacheEvent())
+        setStateEvent(TodoStateEvent.GetAllUserTodoNumInCacheEvent())
         setStateEvent(TodoStateEvent.GetAllUserTodoInCacheEvent(viewState.value?.page!!))
-        //setStateEvent(TodoStateEvent.GetAllUserTodoEvent(getUserLoggedIn()?.id.toString()))
+        setStateEvent(TodoStateEvent.GetAllUserTodoEvent(getUserLoggedIn()?.id.toString()))
         printLogD("TodoListViewModel",
             "loadFirstPage: ${getCurrentViewStateOrNew().searchQuery}")
     }
 
+    fun setQuery(query: String?){
+        val update =  getCurrentViewStateOrNew()
+        update.searchQuery = query
+        setViewState(update)
+    }
 
-    private fun resetPage(){
+    fun resetPage(resetQuery : Boolean = false){
         val update = getCurrentViewStateOrNew()
         update.page = 1
+        update.numTodosInCache = null
+        update.isSearching = false
+        if(resetQuery)
+            update.searchQuery = null
+        update.newTodo = null
         setViewState(update)
     }
 
@@ -158,7 +168,7 @@ class TodoViewModel
         setViewState(update)
     }
 
-    private fun setTodoListData(it: List<Todo>) {
+     fun setTodoListData(it: List<Todo>) {
         val update = getCurrentViewStateOrNew()
         update.userTodoList = it
         setViewState(update)
@@ -176,19 +186,21 @@ class TodoViewModel
                     stateEvent = stateEvent
                 )
             }
-
             is TodoStateEvent.GetAllUserTodoInCacheEvent ->{
                 todoInteractors.getAllTodoListInCache.getAll(
                     stateEvent = stateEvent
                 )
             }
-
+            is TodoStateEvent.GetAllUserTodoNumInCacheWithQueryEvent ->{
+                todoInteractors.getAllTodoNumInCacheWithQuery.getNum(
+                    stateEvent = stateEvent
+                )
+            }
             is TodoStateEvent.GetAllUserTodoNumInCacheEvent ->{
                 todoInteractors.getAllTodoNumInCache.getNum(
                     stateEvent = stateEvent
                 )
             }
-
             is TodoStateEvent.SearchTodoListEvent -> {
                 todoInteractors.searchTodoListInCache.searchTodoList(
                     stateEvent = stateEvent
@@ -199,7 +211,11 @@ class TodoViewModel
                     stateEvent = stateEvent
                 )
             }
-
+            is TodoStateEvent.DeleteAllTodoUserInCacheEvent ->{
+                todoInteractors.deleteAllTodoUserInCache.delete(
+                    stateEvent = stateEvent
+                )
+            }
             else -> {
                 emitInvalidStateEvent(stateEvent)
             }
@@ -225,6 +241,11 @@ class TodoViewModel
         setViewState(update)
     }
 
+    fun getTodoListSize() : Int {
+        printLogD("getTodList: ", getCurrentViewStateOrNew().userTodoList?.size.toString()?: 0.toString())
+        return getCurrentViewStateOrNew().userTodoList?.size?: 0
+    }
+
     fun clearLayoutManagerState(){
         val update = getCurrentViewStateOrNew()
         update.layoutManagerState = null
@@ -234,4 +255,59 @@ class TodoViewModel
     fun updateTodoListOnline() {
         setStateEvent(TodoStateEvent.GetAllUserTodoEvent(getUserLoggedIn()!!.id.toString()))
     }
+
+    private fun getNumTodosInCache() : Int{
+        printLogD("getNumTodosInCache",
+            getCurrentViewStateOrNew().numTodosInCache.toString()?: 0.toString())
+        return getCurrentViewStateOrNew().numTodosInCache?: 0
+    }
+
+    fun isPaginationExhausted() = getTodoListSize() >= getNumTodosInCache()
+
+
+    fun isQueryExhausted(): Boolean{
+        printLogD("NoteListViewModel",
+            "is query exhausted? ${getCurrentViewStateOrNew().isQueryExhausted?: true}")
+        return getCurrentViewStateOrNew().isQueryExhausted?: true
+    }
+
+
+    fun nextPage(){
+        if(!isQueryExhausted()){
+            printLogD("NoteListViewModel", "attempting to load next page...")
+            clearLayoutManagerState()
+            incrementPageNumber()
+            if(getCurrentViewStateOrNew().isSearching)
+                setStateEvent(TodoStateEvent.SearchTodoListEvent(query = getCurrentViewStateOrNew().searchQuery!!,"", getCurrentViewStateOrNew().page!!))
+            else
+                setStateEvent(TodoStateEvent.GetAllUserTodoInCacheEvent(getCurrentViewStateOrNew().page!!))
+        }
+    }
+
+    fun searchPage() {
+        setQueryExhausted(false)
+        resetPage()
+        setIsSearching(true)
+            setStateEvent(TodoStateEvent.GetAllUserTodoNumInCacheWithQueryEvent(getCurrentViewStateOrNew().searchQuery!!))
+            setStateEvent(TodoStateEvent.SearchTodoListEvent(query = getCurrentViewStateOrNew().searchQuery!!,"", getCurrentViewStateOrNew().page!!))
+               printLogD("SearchTodoListViewModel",
+            "loadFirstPage: ${getCurrentViewStateOrNew().searchQuery}")
+    }
+
+    fun setIsSearching(data: Boolean) {
+        val update = getCurrentViewStateOrNew()
+        update.isSearching = data
+        setViewState(update)
+    }
+
+    fun loadUpdates() {
+        setQueryExhausted(false)
+        resetPage()
+        setStateEvent(TodoStateEvent.GetAllUserTodoNumInCacheEvent())
+        setStateEvent(TodoStateEvent.GetAllUserTodoInCacheEvent(viewState.value?.page!!))
+        setStateEvent(TodoStateEvent.GetAllUserTodoEvent(getUserLoggedIn()?.id.toString()))
+        printLogD("UpdateTodoListViewModel",
+            "loadFirstPage: ${getCurrentViewStateOrNew().searchQuery}")
+    }
+
 }

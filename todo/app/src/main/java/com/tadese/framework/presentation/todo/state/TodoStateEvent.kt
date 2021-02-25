@@ -32,7 +32,7 @@ sealed class TodoStateEvent : StateEvent {
             return "GetAllUserTodoEvent"
         }
 
-        override fun shouldDisplayProgressBar() = true
+        override fun shouldDisplayProgressBar() = false
     }
 
     class GetAllUserTodoInCacheEvent(
@@ -49,7 +49,36 @@ sealed class TodoStateEvent : StateEvent {
 
         override fun shouldDisplayProgressBar() = true
     }
+
     class GetAllUserTodoNumInCacheEvent() : TodoStateEvent() {
+
+        override fun errorInfo(): String {
+            return "Error fetching TODO list."
+        }
+
+        override fun eventName(): String {
+            return "GetAllUserTodoNumInCacheEvent"
+        }
+
+        override fun shouldDisplayProgressBar() = false
+    }
+
+    class DeleteAllTodoUserInCacheEvent() : TodoStateEvent() {
+
+        override fun errorInfo(): String {
+            return "Error fetching TODO list."
+        }
+
+        override fun eventName(): String {
+            return "DeleteAllTodoUserInCacheEvent"
+        }
+
+        override fun shouldDisplayProgressBar() = false
+    }
+
+    class GetAllUserTodoNumInCacheWithQueryEvent(
+        val query: String
+    ) : TodoStateEvent() {
 
         override fun errorInfo(): String {
             return "Error fetching TODO list."

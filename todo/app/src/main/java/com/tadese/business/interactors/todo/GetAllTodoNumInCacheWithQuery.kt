@@ -3,7 +3,6 @@ package com.tadese.business.interactors.todo
 import com.example.cleanarchitecture.business.data.util.appApiCall
 import com.tadese.business.data.cache.abstraction.AppCacheDataSource
 import com.tadese.business.data.network.ApiResponseHandler
-import com.tadese.business.domain.model.todo.Todo
 import com.tadese.business.domain.state.DataState
 import com.tadese.business.domain.state.MessageType
 import com.tadese.business.domain.state.Response
@@ -16,33 +15,32 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 
-class GetAllTodoListInCache(
+class GetAllTodoNumInCacheWithQuery(
     private val appCacheDataSource: AppCacheDataSource
 ) {
-    fun getAll(
-        stateEvent: TodoStateEvent.GetAllUserTodoInCacheEvent
+    fun getNum(
+        stateEvent: TodoStateEvent.GetAllUserTodoNumInCacheWithQueryEvent
     ): Flow<DataState<TodoViewState>> = flow {
 
         val networkResult = appApiCall(Dispatchers.IO) {
-            appCacheDataSource.getAllTodoByPage(stateEvent.page)
+            appCacheDataSource.getNumTodoWithQuery(stateEvent.query)
         }
 
-        var handler = object : ApiResponseHandler<TodoViewState, List<Todo>>(
+        var handler = object : ApiResponseHandler<TodoViewState, Int>(
             response = networkResult,
             stateEvent = stateEvent
         ) {
 
-            override suspend fun handleSuccess(resultObj: List<Todo>): DataState<TodoViewState> {
+            override suspend fun handleSuccess(resultObj: Int): DataState<TodoViewState> {
 
-                printLogD("Cache Response", resultObj.toString())
                 val viewState = TodoViewState(
-                    userTodoList = resultObj,
+                    numTodosInCache = resultObj,
                 )
-                var message: String? = GET_ALL_TODO_LIST_IN_CACHE_SUCCESS
+                var message: String? = GET_TODO_TOTAL_NUM_IN_CACHE_SUCCESS
                 var uiComponentType: UIComponentType = UIComponentType.None()
-                if (resultObj.isEmpty()) {
-                    message = GET_TODO_LIST_IN_CACHE_SUCCESS_WITH_EMPTY_LIST
-                    uiComponentType = UIComponentType.Toast()
+                if (resultObj < 0) {
+                    message = GET_TODO_TOTAL_NUM_IN_CACHE_EMPTY
+                    uiComponentType = UIComponentType.None()
                 }
                 return DataState.data(
                     response = Response(
@@ -58,13 +56,14 @@ class GetAllTodoListInCache(
 
         }.getResult()
 
+        printLogD(handler.javaClass.name, handler.toString())
         emit(handler)
 
     }
 
 
     companion object {
-        const val GET_ALL_TODO_LIST_IN_CACHE_SUCCESS = "Successfully Fetched Todo List In Cache"
-        const val GET_TODO_LIST_IN_CACHE_SUCCESS_WITH_EMPTY_LIST = "Empty List found"
+        const val GET_TODO_TOTAL_NUM_IN_CACHE_SUCCESS = "Successfully found todo"
+        const val GET_TODO_TOTAL_NUM_IN_CACHE_EMPTY = "Todo list is empty"
     }
 }

@@ -91,5 +91,12 @@ constructor(
         return postDao.insertPosts(postCacheMapper.mapToEntityList(posts))
     }
 
+    override suspend fun getNumTodoWithQuery(query: String): Int {
+        return postDao.getNumTodoWithQuery(query)
+    }
+
+    override suspend fun deleteAllTodos(): Int {
+        return postDao.deleteAllTodos()
+    }
 
 }

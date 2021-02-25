@@ -18,6 +18,8 @@ interface AppCacheDataSource {
 
     suspend fun getNumTodo(): Int
 
+    suspend fun getNumTodoWithQuery(query: String): Int
+
     suspend fun getAllTodo(): List<Todo>
 
     suspend fun getAllTodoByPage(page: Int): List<Todo>
@@ -29,6 +31,8 @@ interface AppCacheDataSource {
     suspend fun saveUserTodos(usersTodo: List<Todo>):LongArray
 
     suspend fun deleteTodos(todos: List<Int>): Int
+
+    suspend fun deleteAllTodos(): Int
 
     suspend fun savePosts(posts: List<Post>): LongArray
 }

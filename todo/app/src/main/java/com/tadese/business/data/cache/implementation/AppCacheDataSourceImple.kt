@@ -21,6 +21,8 @@ constructor(
 
     override suspend fun getNumTodo() = appDaoService.getNumTodo()
 
+    override suspend fun getNumTodoWithQuery(query: String) = appDaoService.getNumTodoWithQuery(query)
+
     override suspend fun getAllTodo() = appDaoService.getAllTodo()
 
     override suspend fun getAllTodoByPage(page: Int) = appDaoService.getAllTodoByPage(page)
@@ -34,5 +36,7 @@ constructor(
     override suspend fun deleteTodos(todos: List<Int>) = appDaoService.deleteTodos(todos)
 
     override suspend fun savePosts(posts: List<Post>) = appDaoService.savePosts(posts)
+
+    override suspend fun deleteAllTodos(): Int = appDaoService.deleteAllTodos()
 
 }

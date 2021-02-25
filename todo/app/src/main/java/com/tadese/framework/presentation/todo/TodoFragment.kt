@@ -23,6 +23,7 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.tadese.R
 import com.tadese.business.domain.model.todo.Todo
 import com.tadese.business.domain.state.DialogInputCaptureCallback
+import com.tadese.business.domain.state.OnReloadCaptureCallback
 import com.tadese.business.domain.state.StateMessageCallback
 import com.tadese.business.interactors.authentication.UserLogin
 import com.tadese.business.interactors.todo.GetAllTodoListInCache
@@ -33,12 +34,15 @@ import com.tadese.business.interactors.todo.GetAllTodoNumInCache.Companion.GET_T
 import com.tadese.business.interactors.todo.GetAllTodoOnNetworkByUserId
 import com.tadese.business.interactors.todo.GetAllTodoOnNetworkByUserId.Companion.FETCHING_USER_TODOS_LIST_ON_NETWORK_EMPTY
 import com.tadese.business.interactors.todo.GetAllTodoOnNetworkByUserId.Companion.FETCHING_USER_TODOS_LIST_ON_NETWORK_WAS_SUCCESSFUL
+import com.tadese.business.interactors.todo.SearchTodoListInCache.Companion.SEARCH_TODO_NO_MATCHING_RESULTS
+import com.tadese.business.interactors.todo.SearchTodoListInCache.Companion.SEARCH_TODO_SUCCESS
 import com.tadese.framework.presentation.MainActivity
 import com.tadese.framework.presentation.common.BaseFragment
 import com.tadese.framework.presentation.common.TopSpacingItemDecoration
 import com.tadese.framework.presentation.common.hideKeyboard
 import com.tadese.framework.presentation.todo.state.TodoListInteractionManager
 import com.tadese.framework.presentation.todo.state.TodoListToolbarState
+import com.tadese.framework.presentation.todo.state.TodoStateEvent
 import com.tadese.framework.presentation.todo.state.TodoViewState
 import com.tadese.util.printLogD
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -126,7 +130,9 @@ constructor(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
-            search_content_container.addView(view)
+            var searchView =activity?.toolbar?.findViewById<LinearLayout>(R.id.search_content_container)
+            searchView?.removeAllViews()
+            searchView?.addView(view)
             setupMultiSelectionToolbar(view)
         }
     }
@@ -142,15 +148,18 @@ constructor(
             .findViewById<ImageView>(R.id.action_delete_notes)
             .setOnClickListener {
                // deleteNotes()
+                val mView = it
             }
     }
 
 
     private fun disableSearchViewToolbarState(){
         view?.let {
-            val view = toolbar_content_container
-                .findViewById<Toolbar>(R.id.toolbar)
-            toolbar_content_container.removeView(view)
+            var searchView =activity?.toolbar?.findViewById<LinearLayout>(R.id.search_content_container)
+            searchView?.removeAllViews()
+//            val view = toolbar_content_container
+//                .findViewById<Toolbar>(R.id.toolbar)
+//            toolbar_content_container.removeView(view)
         }
     }
 
@@ -175,11 +184,15 @@ constructor(
 
     override fun onResume() {
         super.onResume()
-        viewModel.clearList()
-        viewModel.getTodosInCache()
-        viewModel.retrieveNumTodosInCache()
-        viewModel.updateTodoListOnline()
+        OpenNewPage()
     }
+
+//    fun reloadData(){
+//        viewModel.clearList()
+//        viewModel.getTodosInCache()
+//        viewModel.retrieveNumTodosInCache()
+//        viewModel.updateTodoListOnline()
+//    }
 
     private fun setupFilterButton(){
         val searchViewToolbar: Toolbar? = activity?.toolbar
@@ -206,12 +219,18 @@ constructor(
                 if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED
                     || actionId == EditorInfo.IME_ACTION_SEARCH ) {
                     val searchQuery = v.text.toString()
-//                    viewModel.setQuery(searchQuery)
-//                    startNewSearch()
+                    viewModel.setQuery(searchQuery)
+                    startNewSearch()
+                    uiController.hideSoftKeyboard()
                 }
                 true
             }
         }
+    }
+
+    private fun startNewSearch() {
+        viewModel.clearList()
+        viewModel.searchPage()
     }
 
     override fun onDestroyView() {
@@ -250,22 +269,28 @@ constructor(
 
             if(viewState != null){
                 viewState.userTodoList?.let { noteList ->
-//                    if(viewModel.isPaginationExhausted()
-//                        && !viewModel.isQueryExhausted()){
-//                        viewModel.setQueryExhausted(true)
-//                    }
-                    listAdapter?.submitList(noteList)
-                    listAdapter?.notifyDataSetChanged()
+
+                    if(!noteList.isNullOrEmpty()){
+                         if(viewModel.isPaginationExhausted()
+                            && !viewModel.isQueryExhausted()){
+                            printLogD("Pagination", "Pagination is exhausted.")
+                            viewModel.setQueryExhausted(true)
+                            viewModel.setStateEvent(TodoStateEvent.GetAllUserTodoEvent(viewModel.getUserLoggedIn()?.id.toString()))// Fetch if there are new updates online
+                        }
+                    }
+                        listAdapter?.submitList(noteList)
+                        listAdapter?.notifyDataSetChanged()
+
                 }
 
-                viewState.latestUserTodoList?.let { noteList ->
-//                    if(viewModel.isPaginationExhausted()
-//                        && !viewModel.isQueryExhausted()){
-//                        viewModel.setQueryExhausted(true)
+//                viewState.latestUserTodoList?.let { noteList ->
+//                    var isupdate = !isUpdates()
+//                    if(isupdate){
+//                        viewModel.setTodoListData(noteList)
+////                        listAdapter?.submitList(noteList)
+////                        listAdapter?.notifyDataSetChanged()
 //                    }
-//                    listAdapter?.submitList(noteList)
-//                    listAdapter?.notifyDataSetChanged()
-                }
+//                }
 
                 // a note been inserted or selected
                 viewState.newTodo?.let { newNote ->
@@ -287,45 +312,81 @@ constructor(
         viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
 
             stateMessage?.response?.let {
-                when(it.message){
+                it.message?.let {
+                    when (it) {
 
-                    GET_ALL_TODO_LIST_IN_CACHE_SUCCESS -> {
-                        viewModel.clearStateMessage()
-                    }
+                        GET_ALL_TODO_LIST_IN_CACHE_SUCCESS -> {
+                            viewModel.clearStateMessage()
+                        }
 
-                    GET_TODO_LIST_IN_CACHE_SUCCESS_WITH_EMPTY_LIST -> {
-                        viewModel.clearStateMessage()
-                    }
+                        GET_TODO_LIST_IN_CACHE_SUCCESS_WITH_EMPTY_LIST -> {
+                            viewModel.clearStateMessage()
+                        }
 
-                    GET_TODO_TOTAL_NUM_IN_CACHE_SUCCESS ->{
-                        viewModel.clearStateMessage()
-                    }
+                        GET_TODO_TOTAL_NUM_IN_CACHE_SUCCESS -> {
+                            viewModel.clearStateMessage()
+                        }
 
-                    GET_TODO_TOTAL_NUM_IN_CACHE_EMPTY -> {
-                        viewModel.clearStateMessage()
-                    }
+                        GET_TODO_TOTAL_NUM_IN_CACHE_EMPTY -> {
+                            viewModel.clearStateMessage()
+                        }
 
-                    FETCHING_USER_TODOS_LIST_ON_NETWORK_WAS_SUCCESSFUL ->{
-                        viewModel.clearStateMessage()
-                    }
+                        SEARCH_TODO_SUCCESS -> {
+                            viewModel.clearStateMessage()
+                        }
 
-                    FETCHING_USER_TODOS_LIST_ON_NETWORK_EMPTY -> {
-                        uiController.onResponseReceived(
-                            response = stateMessage.response,
-                            stateMessageCallback = object: StateMessageCallback {
-                                override fun removeMessageFromStack() {
-                                    viewModel.clearStateMessage()
+                        SEARCH_TODO_NO_MATCHING_RESULTS ->{
+                            uiController.onResponseReceived(
+                                response = stateMessage.response,
+                                stateMessageCallback = object : StateMessageCallback {
+                                    override fun removeMessageFromStack() {
+                                        viewModel.clearStateMessage()
+                                    }
                                 }
-                            }
-                        )
-                    }
+                            )
+                        }
 
+                        FETCHING_USER_TODOS_LIST_ON_NETWORK_WAS_SUCCESSFUL -> {
+                            viewModel.clearStateMessage()
+
+                                 uiController.displayLatestChangesNotification(
+                                true,
+                                "New updates received.",
+                                object : OnReloadCaptureCallback {
+                                    override fun onReloadCaptured() {
+                                        viewModel.getCurrentViewStateOrNew().latestUserTodoList?.let {
+                                            OpenNewPage()
+                                        }
+                                    }
+
+                                })
+
+                        }
+
+                        FETCHING_USER_TODOS_LIST_ON_NETWORK_EMPTY -> {
+                            uiController.onResponseReceived(
+                                response = stateMessage.response,
+                                stateMessageCallback = object : StateMessageCallback {
+                                    override fun removeMessageFromStack() {
+                                        viewModel.clearStateMessage()
+                                    }
+                                }
+                            )
+                        }
+
+                        else ->{
+                            viewModel.clearStateMessage()
+                        }
+
+                    }
                 }
+
             }
         })
 
     }
 
+    private fun isUpdates() = viewModel.getCurrentViewStateOrNew().userTodoList.isNullOrEmpty()
 
     private fun setupFAB() {
         add_new_note_fab.setOnClickListener {
@@ -347,24 +408,22 @@ constructor(
 
     private fun setupSwipeRefresh() {
         swipe_refresh.setOnRefreshListener {
-            startNewSearch()
+            OpenNewPage()
             swipe_refresh.isRefreshing = false
         }
     }
 
-    private fun startNewSearch() {
+    private fun OpenNewPage() {
         printLogD("DCM", "start new search")
         viewModel.clearList()
         viewModel.loadFirstPage()
-        //viewModel.getTodosInCache()
     }
 
 
     private fun setupRecyclerView() {
         recycler_view.apply {
             layoutManager = LinearLayoutManager(activity)
-            val topSpacingDecorator = TopSpacingItemDecoration(20)
-            addItemDecoration(topSpacingDecorator)
+            addItemDecoration(TopSpacingItemDecoration(20))
             itemTouchHelper = ItemTouchHelper(
                 NoteItemTouchHelperCallback(
                     this@TodoFragment,
@@ -382,9 +441,9 @@ constructor(
                     super.onScrollStateChanged(recyclerView, newState)
                     val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                     val lastPosition = layoutManager.findLastVisibleItemPosition()
-//                    if (lastPosition == listAdapter?.itemCount?.minus(1)) {
-//                        viewModel.nextPage()
-//                    }
+                    if (lastPosition == listAdapter?.itemCount?.minus(1)) {
+                            viewModel.nextPage()
+                    }
                 }
             })
             adapter = listAdapter

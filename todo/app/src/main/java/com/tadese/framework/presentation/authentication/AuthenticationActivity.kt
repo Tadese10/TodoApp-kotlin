@@ -129,6 +129,14 @@ class AuthenticationActivity : AppCompatActivity() , UIController {
             progress_bar.gone()
     }
 
+    override fun displayLatestChangesNotification(
+        isDisplayed: Boolean,
+        message: String?,
+        callback: OnReloadCaptureCallback
+    ) {
+
+    }
+
 
     override fun displayInputCaptureDialog(title: String, callback: DialogInputCaptureCallback) {
         dialogInView = MaterialDialog(this).show {

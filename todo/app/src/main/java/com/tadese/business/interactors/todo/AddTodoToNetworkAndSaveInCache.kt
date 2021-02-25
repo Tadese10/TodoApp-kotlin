@@ -38,7 +38,7 @@ class AddTodoToNetworkAndSaveInCache(
             override suspend fun handleSuccess(resultObj: Todo?): DataState<TodoViewState> {
 
                 val viewState = TodoViewState(
-                    newTodo = resultObj
+                    newTodo = resultObj,
                 )
                 return  DataState.data(
                     response = Response(

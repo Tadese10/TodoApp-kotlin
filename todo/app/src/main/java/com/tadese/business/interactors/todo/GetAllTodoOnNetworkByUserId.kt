@@ -26,6 +26,9 @@ class GetAllTodoOnNetworkByUserId(
         stateEvent : TodoStateEvent.GetAllUserTodoEvent
     ) : Flow<DataState<TodoViewState>> = flow{
 
+        var cachedTodo = appCacheDataSource.getAllTodo()
+        printLogD("Cached Todo Data ", cachedTodo.toString())
+
         val networkResult = appApiCall(Dispatchers.IO){
             todoNetworkDataSource.getAllTodoByUserId(stateEvent.username)
         }
@@ -37,8 +40,9 @@ class GetAllTodoOnNetworkByUserId(
 
             override suspend fun handleSuccess(resultObj: List<Todo>): DataState<TodoViewState> {
                 printLogD("NetworkResponse", resultObj.toString())
+
                 val viewState = TodoViewState(
-                    latestUserTodoList = resultObj
+                    latestUserTodoList = resultObj,
                 )
 
                 if(resultObj.isNullOrEmpty()){
@@ -53,15 +57,28 @@ class GetAllTodoOnNetworkByUserId(
                     )
                 }
                 else{
-                    return  DataState.data(
-                        response = Response(
-                            message = FETCHING_USER_TODOS_LIST_ON_NETWORK_WAS_SUCCESSFUL,
-                            uiComponentType = UIComponentType.None(),
-                            messageType = MessageType.Success()
-                        ),
-                        data = viewState,
-                        stateEvent = stateEvent
-                    )
+                    if(resultObj != cachedTodo){
+                        return  DataState.data(
+                            response = Response(
+                                message = FETCHING_USER_TODOS_LIST_ON_NETWORK_WAS_SUCCESSFUL,
+                                uiComponentType = UIComponentType.None(),
+                                messageType = MessageType.Success()
+                            ),
+                            data = viewState,
+                            stateEvent = stateEvent
+                        )
+                    }else{
+                       return DataState.data(
+                            response = Response(
+                                message = FETCHING_USER_TODOS_LIST_ON_NETWORK_EMPTY,
+                                uiComponentType = UIComponentType.Toast(),
+                                messageType = MessageType.Success()
+                            ),
+                            data = viewState,
+                            stateEvent = stateEvent
+                        )
+                    }
+
                 }
 
             }
@@ -71,22 +88,22 @@ class GetAllTodoOnNetworkByUserId(
             printLogD(handler.javaClass.name, handler.toString())
 
             handler.data?.latestUserTodoList?.let {
-                saveUsersTodoToCachedata(it!!)//Cache the response
+                saveUsersTodoToCachedata(it!!, cachedTodo)//Cache the response
             }
 
         emit(handler)
 
     }
 
-    private suspend fun saveUsersTodoToCachedata(userTodoList: List<Todo>) {
+    private suspend fun saveUsersTodoToCachedata(userTodoList: List<Todo>, cachedTodo: List<Todo>) {
         //Check if network returned same cached data
-        var cachedTodo = appCacheDataSource.getAllTodo()
+
         if(cachedTodo.isNullOrEmpty()){
             save(userTodoList)
             printLogD("Todo Cached Data ", "Todo Cached Data is null")
         }
         else{
-            if(cachedTodo != userTodoList){
+            if(userTodoList != cachedTodo){
                 printLogD("Differences in Net and Cached Data", "Yes")
                 var dataToBeDeletedIds = userTodoList.filter { todo -> cachedTodo.any { it.id == todo!!.id } }.map { it.id }
                 if(!dataToBeDeletedIds.isNullOrEmpty()){
@@ -94,7 +111,9 @@ class GetAllTodoOnNetworkByUserId(
                     printLogD("Deleted todos: ", dataToBeDeletedIds.toString())
                 }
                 save(userTodoList)
-            }
+            }else
+                printLogD("Differences in Net and Cached Data", "No")
+
         }
     }
 
@@ -106,6 +125,6 @@ class GetAllTodoOnNetworkByUserId(
 
     companion object{
         const val FETCHING_USER_TODOS_LIST_ON_NETWORK_WAS_SUCCESSFUL = "Successfully fetched Todo online."
-        const val FETCHING_USER_TODOS_LIST_ON_NETWORK_EMPTY = "No Todo found online. Please add one."
+        const val FETCHING_USER_TODOS_LIST_ON_NETWORK_EMPTY = "Todo list is empty."
     }
 }

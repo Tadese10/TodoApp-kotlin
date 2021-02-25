@@ -34,7 +34,7 @@ class SearchTodoListInCacheById(
             override suspend fun handleSuccess(resultObj: Todo): DataState<TodoViewState> {
 
                 val viewState = TodoViewState(
-                    searchTodo = resultObj
+                    searchTodo = resultObj,
                 )
                 var message: String? = SEARCH_TODO_SUCCESS
                 var uiComponentType: UIComponentType = UIComponentType.None()

@@ -43,4 +43,8 @@ interface AppDaoService {
     suspend fun getAllPost(): List<Post>
 
     suspend fun savePosts(posts: List<Post>): LongArray
+
+    suspend fun getNumTodoWithQuery(query: String): Int
+
+    suspend fun deleteAllTodos(): Int
 }

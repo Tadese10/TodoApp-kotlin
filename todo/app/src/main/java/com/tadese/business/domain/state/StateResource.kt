@@ -50,6 +50,11 @@ interface StateMessageCallback{
 }
 
 
+interface OnReloadCaptureCallback {
+
+    fun onReloadCaptured()
+}
+
 interface DialogInputCaptureCallback {
 
     fun onTextCaptured(text: String)
